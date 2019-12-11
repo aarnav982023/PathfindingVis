@@ -21,9 +21,22 @@
     width:100%;
     height:100%;
 }
-.start-node{
-    background-color:green;
+.start-node {
+    background-color:green !important;
 }
 .end-node{
-    background-color:red;
+    background-color:red !important; 
+}
+.visited{
+    animation: onvisit 2s;
+    background-color:dodgerblue;
+}
+
+@keyframes onvisit{
+    0%{
+        background-color:yellow;
+    }
+    100%{
+        background-color:dodgerblue;
+    }
 }

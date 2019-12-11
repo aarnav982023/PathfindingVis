@@ -2,12 +2,13 @@ import React from "react";
 import Node from "./Node";
 import dijkstra from "../algorithms/dijkstra";
 
+const rows = 26;
+const columns = 65;
 let startNode = { row: 13, column: 16 };
 let endNode = { row: 13, column: 45 };
-const rows = 27;
-const columns = 65;
 let selectStart = false;
 let selectEnd = false;
+let isAnimating = false;
 
 class Grid extends React.Component {
   state = {
@@ -29,6 +30,7 @@ class Grid extends React.Component {
               column={this.state.grid[i][j].col}
               isStart={this.state.grid[i][j].isStart}
               isEnd={this.state.grid[i][j].isEnd}
+              isVisited={this.state.grid[i][j].isVisited}
               onMouseClick={this.onMouseClick}
               onMouseEnterAndLeave={this.onMouseEnterAndLeave}
             />
@@ -39,7 +41,7 @@ class Grid extends React.Component {
     this.setRowColumnStyle();
     return (
       <div>
-        <button>dijkstra</button>
+        <button onClick={this.visualizeDijkstra}>dijkstra</button>
         <table className="grid">
           <tbody>{nodes}</tbody>
         </table>
@@ -47,13 +49,18 @@ class Grid extends React.Component {
     );
   }
   setGrid = () => {
+    let grid = this.getInitGrid();
+    this.setState({ grid });
+  };
+
+  getInitGrid = () => {
     let grid = [];
     for (let i = 0; i < rows; i++) {
       let row = [];
       for (let j = 0; j < columns; j++) row.push(this.getNode(i, j));
       grid.push(row);
     }
-    this.setState({ grid });
+    return grid;
   };
 
   getNode = (row, col) => {
@@ -61,7 +68,8 @@ class Grid extends React.Component {
       row,
       col,
       isStart: row === startNode.row && col === startNode.column,
-      isEnd: row === endNode.row && col === endNode.column
+      isEnd: row === endNode.row && col === endNode.column,
+      isVisited: false
     };
   };
   setRowColumnStyle = () => {
@@ -70,6 +78,7 @@ class Grid extends React.Component {
   };
 
   onMouseClick = (row, column) => {
+    if (isAnimating) return;
     if (selectStart) {
       if (row !== endNode.row || column !== endNode.column) {
         selectStart = false;
@@ -133,6 +142,27 @@ class Grid extends React.Component {
     endNode = { row, column };
     grid[endNode.row][endNode.column].isEnd = true;
     this.setState({ grid });
+  };
+
+  visualizeDijkstra = () => {
+    this.setGrid();
+    let grid = this.state.grid;
+    const visitedNodes = dijkstra(grid, startNode, endNode);
+    visitedNodes.shift();
+    isAnimating = true;
+    for (let i = 0; i < visitedNodes.length; i++) {
+      const { row, col } = visitedNodes[i];
+      setTimeout(() => {
+        document.querySelector(`#node-${row}-${col}`).classList.add("visited");
+        if (i === visitedNodes.length - 1) {
+          this.setAnimatingFalse();
+          this.setState({ grid });
+        }
+      }, 10 * i);
+    }
+  };
+  setAnimatingFalse = () => {
+    isAnimating = false;
   };
 }
 
