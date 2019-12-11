@@ -1,0 +1,29 @@
+:root{
+    --row : 30;
+    --column : 80;
+}
+
+.grid-container{
+    padding-top: 150px;
+}
+.grid { 
+    border-collapse: collapse;
+    width:100%;
+    height:calc(100vw/var(--column)*var(--row));
+}   
+.grid td{
+    border:0.1px solid rgb(172, 231, 216);
+    width:1fr;
+    height:1fr;
+    padding:0;
+}
+.node{
+    width:100%;
+    height:100%;
+}
+.start-node{
+    background-color:green;
+}
+.end-node{
+    background-color:red;
+}
