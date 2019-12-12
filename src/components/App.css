@@ -28,10 +28,25 @@
     background-color:red !important; 
 }
 .visited{
-    animation: onvisit 2s;
+    animation: onvisit 1s;
     background-color:dodgerblue;
 }
-
+.shortest-path{
+    animation: onshortpath 0.5s;
+    background-color:dodgerblue;
+    background-image: linear-gradient(darkblue,darkblue);
+    background-repeat: no-repeat;
+    transition:background-size 0.5s ease;
+    background-position:50% 50%;
+}
+@keyframes onshortpath{
+    0%{
+        background-size:50% 50%;
+    }
+    100%{
+        background-size:100% 100%;
+    }
+}
 @keyframes onvisit{
     0%{
         background-color:yellow;

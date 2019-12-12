@@ -2,13 +2,13 @@ import React from "react";
 
 class Node extends React.PureComponent {
   render() {
-    console.log("NodeRender");
     const { row, column, onMouseClick, onMouseEnterAndLeave } = this.props;
-
     const statusClass = this.props.isStart
       ? "start-node"
       : this.props.isEnd
       ? "end-node"
+      : this.props.isShortestPath
+      ? "shortest-path"
       : this.props.isVisited
       ? "visited"
       : "";

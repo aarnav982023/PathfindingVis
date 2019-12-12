@@ -31,6 +31,7 @@ class Grid extends React.Component {
               isStart={this.state.grid[i][j].isStart}
               isEnd={this.state.grid[i][j].isEnd}
               isVisited={this.state.grid[i][j].isVisited}
+              isShortestPath={this.state.grid[i][j].isShortestPath}
               onMouseClick={this.onMouseClick}
               onMouseEnterAndLeave={this.onMouseEnterAndLeave}
             />
@@ -41,15 +42,24 @@ class Grid extends React.Component {
     this.setRowColumnStyle();
     return (
       <div>
-        <button onClick={this.visualizeDijkstra}>dijkstra</button>
+        <button onClick={this.visualizeDijkstra} disabled={isAnimating}>
+          dijkstra
+        </button>
         <table className="grid">
           <tbody>{nodes}</tbody>
         </table>
       </div>
     );
   }
-  setGrid = () => {
-    let grid = this.getInitGrid();
+  setGrid = async (grid = this.getInitGrid()) => {
+    if (selectEnd) {
+      selectEnd = false;
+      this.changeGridEndNode(endNode.row, endNode.column);
+    }
+    if (selectStart) {
+      selectStart = false;
+      this.changeGridStartNode(startNode.row, startNode.column);
+    }
     this.setState({ grid });
   };
 
@@ -69,7 +79,8 @@ class Grid extends React.Component {
       col,
       isStart: row === startNode.row && col === startNode.column,
       isEnd: row === endNode.row && col === endNode.column,
-      isVisited: false
+      isVisited: false,
+      isShortestPath: false
     };
   };
   setRowColumnStyle = () => {
@@ -130,6 +141,11 @@ class Grid extends React.Component {
     }*/
   };
   changeGridStartNode = (row, column) => {
+    if (row === startNode.row && column === startNode.column) {
+      document
+        .querySelector(`#node-${row}-${column}`)
+        .classList.add("start-node");
+    }
     let grid = this.state.grid;
     grid[startNode.row][startNode.column].isStart = false;
     startNode = { row, column };
@@ -137,6 +153,11 @@ class Grid extends React.Component {
     this.setState({ grid });
   };
   changeGridEndNode = (row, column) => {
+    if (row === endNode.row && column === endNode.column) {
+      document
+        .querySelector(`#node-${row}-${column}`)
+        .classList.add("end-node");
+    }
     let grid = this.state.grid;
     grid[endNode.row][endNode.column].isEnd = false;
     endNode = { row, column };
@@ -144,21 +165,41 @@ class Grid extends React.Component {
     this.setState({ grid });
   };
 
-  visualizeDijkstra = () => {
-    this.setGrid();
-    let grid = this.state.grid;
-    const visitedNodes = dijkstra(grid, startNode, endNode);
-    visitedNodes.shift();
+  visualizeDijkstra = async () => {
     isAnimating = true;
+    await this.setGrid();
+    let grid = this.state.grid;
+    const response = dijkstra(grid, startNode, endNode);
+    const { visitedNodes, shortestPath } = response;
+    visitedNodes.shift();
+    shortestPath.shift();
+    shortestPath.pop();
     for (let i = 0; i < visitedNodes.length; i++) {
       const { row, col } = visitedNodes[i];
       setTimeout(() => {
         document.querySelector(`#node-${row}-${col}`).classList.add("visited");
         if (i === visitedNodes.length - 1) {
-          this.setAnimatingFalse();
-          this.setState({ grid });
+          if (shortestPath.length) this.animateShortestPath(shortestPath, grid);
+          else {
+            this.setAnimatingFalse();
+            this.setState({ grid });
+          }
         }
-      }, 10 * i);
+      }, 5 * i);
+    }
+  };
+  animateShortestPath = (shortestPath, grid) => {
+    for (let i = 0; i < shortestPath.length; i++) {
+      const { row, col } = shortestPath[i];
+      setTimeout(async () => {
+        document
+          .querySelector(`#node-${row}-${col}`)
+          .classList.add("shortest-path");
+        if (i === shortestPath.length - 1) {
+          this.setAnimatingFalse();
+          setTimeout(() => this.setState({ grid }), 20 * i);
+        }
+      }, 20 * i);
     }
   };
   setAnimatingFalse = () => {
