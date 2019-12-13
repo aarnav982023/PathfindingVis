@@ -11,9 +11,13 @@ let selectEnd = false;
 let isAnimating = false;
 
 class Grid extends React.Component {
-  state = {
-    grid: []
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      grid: []
+    };
+    this.nodeRefs = this.getRefs();
+  }
   componentDidMount() {
     this.setGrid();
   }
@@ -34,6 +38,7 @@ class Grid extends React.Component {
               isShortestPath={this.state.grid[i][j].isShortestPath}
               onMouseClick={this.onMouseClick}
               onMouseEnterAndLeave={this.onMouseEnterAndLeave}
+              ref={this.nodeRefs[i][j]}
             />
           </td>
         );
@@ -72,7 +77,6 @@ class Grid extends React.Component {
     }
     return grid;
   };
-
   getNode = (row, col) => {
     return {
       row,
@@ -140,6 +144,15 @@ class Grid extends React.Component {
       }
     }*/
   };
+  getRefs = () => {
+    let refs = [];
+    for (let i = 0; i < rows; i++) {
+      let rowRef = [];
+      for (let j = 0; j < columns; j++) rowRef.push(React.createRef());
+      refs.push(rowRef);
+    }
+    return refs;
+  };
   changeGridStartNode = (row, column) => {
     if (row === startNode.row && column === startNode.column) {
       document
@@ -168,16 +181,19 @@ class Grid extends React.Component {
   visualizeDijkstra = async () => {
     isAnimating = true;
     await this.setGrid();
-    let grid = this.state.grid;
+    let grid = this.getInitGrid();
     const response = dijkstra(grid, startNode, endNode);
     const { visitedNodes, shortestPath } = response;
     visitedNodes.shift();
     shortestPath.shift();
     shortestPath.pop();
+    this.animate(visitedNodes, shortestPath, grid);
+  };
+  animate = (visitedNodes, shortestPath, grid) => {
     for (let i = 0; i < visitedNodes.length; i++) {
       const { row, col } = visitedNodes[i];
       setTimeout(() => {
-        document.querySelector(`#node-${row}-${col}`).classList.add("visited");
+        this.nodeRefs[row][col].current.classList.add("visited");
         if (i === visitedNodes.length - 1) {
           if (shortestPath.length) this.animateShortestPath(shortestPath, grid);
           else {
@@ -192,9 +208,7 @@ class Grid extends React.Component {
     for (let i = 0; i < shortestPath.length; i++) {
       const { row, col } = shortestPath[i];
       setTimeout(async () => {
-        document
-          .querySelector(`#node-${row}-${col}`)
-          .classList.add("shortest-path");
+        this.nodeRefs[row][col].current.classList.add("shortest-path");
         if (i === shortestPath.length - 1) {
           this.setAnimatingFalse();
           setTimeout(() => this.setState({ grid }), 20 * i);

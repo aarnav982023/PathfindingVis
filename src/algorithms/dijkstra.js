@@ -14,8 +14,6 @@ const dijkstra = (grid, startNode, endNode) => {
       if (node.isStart) {
         node.distance = 0;
       } else node.distance = Infinity;
-      /*node.isVisited = false;
-      node.isShortestPath = false;*/
       node.prevNode = null;
     })
   );

@@ -32,7 +32,7 @@
     background-color:dodgerblue;
 }
 .shortest-path{
-    animation: onshortpath 0.5s;
+    animation: onshortpath 0.2s;
     background-color:dodgerblue;
     background-image: linear-gradient(darkblue,darkblue);
     background-repeat: no-repeat;
