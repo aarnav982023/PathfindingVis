@@ -5,7 +5,7 @@ import "./Grid.css";
 
 const rows = 26;
 const columns = 65;
-let startNode = { row: 13, column: 16 };
+let startNode = { row: 13, column: 15 };
 let endNode = { row: 13, column: 45 };
 let selectStart = false;
 let selectEnd = false;
@@ -64,17 +64,16 @@ class Grid extends React.Component {
   setGrid = async (grid = this.getInitGrid()) => {
     if (selectEnd) {
       selectEnd = false;
-      this.changeGridEndNode(endNode.row, endNode.column);
+      this.changeGridEndNode(endNode.row, endNode.column, grid);
     }
     if (selectStart) {
       selectStart = false;
-      this.changeGridStartNode(startNode.row, startNode.column);
+      this.changeGridStartNode(startNode.row, startNode.column, grid);
     }
     if (selectWall) {
       selectWall = false;
-      await this.setState({});
-    }
-    this.setState({ grid });
+      this.setState({});
+    } else this.setState({ grid });
   };
 
   getInitGrid = () => {
@@ -131,6 +130,9 @@ class Grid extends React.Component {
       this.setState({});
     } else {
       selectWall = true;
+      this.nodeRefs[row][column].current.classList.add("wall");
+      let grid = this.state.grid;
+      grid[row][column].isWall = true;
     }
   };
   onMouseEnterAndLeave = (row, column) => {
@@ -173,19 +175,19 @@ class Grid extends React.Component {
     }
     return refs;
   };
-  changeGridStartNode = (row, column) => {
-    let grid = this.state.grid;
+  changeGridStartNode = (row, column, grid = this.state.grid) => {
     grid[startNode.row][startNode.column].isStart = false;
     startNode = { row, column };
     grid[startNode.row][startNode.column].isStart = true;
-    this.setState({ grid });
+    this.nodeRefs[row][column].current.classList.add("start-node");
+    this.setGrid(grid);
   };
-  changeGridEndNode = (row, column) => {
-    let grid = this.state.grid;
+  changeGridEndNode = (row, column, grid = this.state.grid) => {
     grid[endNode.row][endNode.column].isEnd = false;
     endNode = { row, column };
     grid[endNode.row][endNode.column].isEnd = true;
-    this.setState({ grid });
+    this.nodeRefs[row][column].current.classList.add("end-node");
+    this.setGrid(grid);
   };
   clearVisited = grid => {
     grid.forEach(row =>
@@ -208,6 +210,11 @@ class Grid extends React.Component {
     this.animate(visitedNodes, shortestPath, grid);
   };
   animate = (visitedNodes, shortestPath, grid) => {
+    if (visitedNodes.length === 0) {
+      this.setAnimatingFalse();
+      this.setGrid(grid);
+      return;
+    }
     for (let i = 0; i < visitedNodes.length; i++) {
       const { row, col } = visitedNodes[i];
       setTimeout(() => {
