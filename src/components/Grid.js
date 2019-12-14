@@ -1,6 +1,7 @@
 import React from "react";
 import Node from "./Node";
 import dijkstra from "../algorithms/dijkstra";
+import "./Grid.css";
 
 const rows = 26;
 const columns = 65;
@@ -50,9 +51,11 @@ class Grid extends React.Component {
         <button onClick={this.visualizeDijkstra} disabled={isAnimating}>
           dijkstra
         </button>
-        <table className="grid">
-          <tbody>{nodes}</tbody>
-        </table>
+        <div className="grid-container">
+          <table className="grid">
+            <tbody>{nodes}</tbody>
+          </table>
+        </div>
       </div>
     );
   }
@@ -207,7 +210,7 @@ class Grid extends React.Component {
   animateShortestPath = (shortestPath, grid) => {
     for (let i = 0; i < shortestPath.length; i++) {
       const { row, col } = shortestPath[i];
-      setTimeout(async () => {
+      setTimeout(() => {
         this.nodeRefs[row][col].current.classList.add("shortest-path");
         if (i === shortestPath.length - 1) {
           this.setAnimatingFalse();

@@ -1,5 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./components/App";
+import Grid from "./components/Grid";
 
-ReactDOM.render(<App />, document.querySelector("#root"));
+ReactDOM.render(<Grid />, document.querySelector("#root"));
