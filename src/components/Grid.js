@@ -70,6 +70,10 @@ class Grid extends React.Component {
       selectStart = false;
       this.changeGridStartNode(startNode.row, startNode.column);
     }
+    if (selectWall) {
+      selectWall = false;
+      await this.setState({});
+    }
     this.setState({ grid });
   };
 
@@ -141,10 +145,8 @@ class Grid extends React.Component {
       }
     } else if (selectWall) {
       if (
-        row !== endNode.row ||
-        column !== endNode.column ||
-        row !== startNode.row ||
-        column !== startNode.column
+        (row !== endNode.row || column !== endNode.column) &&
+        (row !== startNode.row || column !== startNode.column)
       ) {
         this.nodeRefs[row][column].current.classList.add("wall");
         let grid = this.state.grid;
