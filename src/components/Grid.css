@@ -40,7 +40,7 @@
     background-position:50% 50%;
 }
 .wall {
-    background-color:black;
+    background-image : linear-gradient(black,black) !important;
 }
 @keyframes onshortpath{
     0%{

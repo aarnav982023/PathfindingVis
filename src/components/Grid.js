@@ -229,7 +229,7 @@ class Grid extends React.Component {
         this.nodeRefs[row][col].current.classList.add("shortest-path");
         if (i === shortestPath.length - 1) {
           this.setAnimatingFalse();
-          setTimeout(() => this.setGrid(grid), 20 * i);
+          setTimeout(() => this.setGrid(grid), 5 * i);
         }
       }, 20 * i);
     }
