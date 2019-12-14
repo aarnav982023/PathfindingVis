@@ -9,6 +9,7 @@ let startNode = { row: 13, column: 16 };
 let endNode = { row: 13, column: 45 };
 let selectStart = false;
 let selectEnd = false;
+let selectWall = false;
 let isAnimating = false;
 
 class Grid extends React.Component {
@@ -36,6 +37,7 @@ class Grid extends React.Component {
               isStart={this.state.grid[i][j].isStart}
               isEnd={this.state.grid[i][j].isEnd}
               isVisited={this.state.grid[i][j].isVisited}
+              isWall={this.state.grid[i][j].isWall}
               isShortestPath={this.state.grid[i][j].isShortestPath}
               onMouseClick={this.onMouseClick}
               onMouseEnterAndLeave={this.onMouseEnterAndLeave}
@@ -87,7 +89,8 @@ class Grid extends React.Component {
       isStart: row === startNode.row && col === startNode.column,
       isEnd: row === endNode.row && col === endNode.column,
       isVisited: false,
-      isShortestPath: false
+      isShortestPath: false,
+      isWall: false
     };
   };
   setRowColumnStyle = () => {
@@ -119,21 +122,33 @@ class Grid extends React.Component {
       !selectStart
     ) {
       selectEnd = true;
+    } else if (selectWall) {
+      selectWall = false;
+      this.setState({});
+    } else {
+      selectWall = true;
     }
   };
   onMouseEnterAndLeave = (row, column) => {
-    //Just changing the class in the dom and not in grid itself.
+    //Just changing the class using refs.
     if (selectStart) {
       if (row !== endNode.row || column !== endNode.column) {
-        document
-          .querySelector(`#node-${row}-${column}`)
-          .classList.toggle("start-node");
+        this.nodeRefs[row][column].current.classList.toggle("start-node");
       }
     } else if (selectEnd) {
       if (row !== startNode.row || column !== startNode.column) {
-        document
-          .querySelector(`#node-${row}-${column}`)
-          .classList.toggle("end-node");
+        this.nodeRefs[row][column].current.classList.toggle("end-node");
+      }
+    } else if (selectWall) {
+      if (
+        row !== endNode.row ||
+        column !== endNode.column ||
+        row !== startNode.row ||
+        column !== startNode.column
+      ) {
+        this.nodeRefs[row][column].current.classList.add("wall");
+        let grid = this.state.grid;
+        grid[row][column].isWall = true;
       }
     }
     //Changing the grid and thus rerendering the dom. Slower than the above
@@ -157,11 +172,6 @@ class Grid extends React.Component {
     return refs;
   };
   changeGridStartNode = (row, column) => {
-    if (row === startNode.row && column === startNode.column) {
-      document
-        .querySelector(`#node-${row}-${column}`)
-        .classList.add("start-node");
-    }
     let grid = this.state.grid;
     grid[startNode.row][startNode.column].isStart = false;
     startNode = { row, column };
@@ -169,22 +179,25 @@ class Grid extends React.Component {
     this.setState({ grid });
   };
   changeGridEndNode = (row, column) => {
-    if (row === endNode.row && column === endNode.column) {
-      document
-        .querySelector(`#node-${row}-${column}`)
-        .classList.add("end-node");
-    }
     let grid = this.state.grid;
     grid[endNode.row][endNode.column].isEnd = false;
     endNode = { row, column };
     grid[endNode.row][endNode.column].isEnd = true;
     this.setState({ grid });
   };
-
+  clearVisited = grid => {
+    grid.forEach(row =>
+      row.forEach(node => {
+        node.isShortestPath = false;
+        node.isVisited = false;
+      })
+    );
+  };
   visualizeDijkstra = async () => {
     isAnimating = true;
-    await this.setGrid();
-    let grid = this.getInitGrid();
+    let grid = this.state.grid;
+    this.clearVisited(grid);
+    await this.setGrid(grid);
     const response = dijkstra(grid, startNode, endNode);
     const { visitedNodes, shortestPath } = response;
     visitedNodes.shift();
@@ -201,7 +214,7 @@ class Grid extends React.Component {
           if (shortestPath.length) this.animateShortestPath(shortestPath, grid);
           else {
             this.setAnimatingFalse();
-            this.setState({ grid });
+            this.setGrid(grid);
           }
         }
       }, 5 * i);
@@ -214,7 +227,7 @@ class Grid extends React.Component {
         this.nodeRefs[row][col].current.classList.add("shortest-path");
         if (i === shortestPath.length - 1) {
           this.setAnimatingFalse();
-          setTimeout(() => this.setState({ grid }), 20 * i);
+          setTimeout(() => this.setGrid(grid), 20 * i);
         }
       }, 20 * i);
     }

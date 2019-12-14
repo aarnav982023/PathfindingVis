@@ -11,6 +11,8 @@ class Node extends React.PureComponent {
       ? "shortest-path"
       : this.props.isVisited
       ? "visited"
+      : this.props.isWall
+      ? "wall"
       : "";
     return (
       <div

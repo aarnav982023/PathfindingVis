@@ -1,7 +1,6 @@
 import PriorityQueue from "js-priority-queue";
 
 const dijkstra = (grid, startNode, endNode) => {
-  //console.log(grid);
   let visitedNodes = [];
   let shortestPath = [];
   let pq = new PriorityQueue({
@@ -36,7 +35,12 @@ const dijkstra = (grid, startNode, endNode) => {
     n.forEach(i => {
       const r = row + i[0];
       const c = col + i[1];
-      if (grid[r] && grid[r][c] && !grid[r][c].isVisited) {
+      if (
+        grid[r] &&
+        grid[r][c] &&
+        !grid[r][c].isVisited &&
+        !grid[r][c].isWall
+      ) {
         grid[r][c].distance = Math.min(node.distance + 1, grid[r][c].distance);
         grid[r][c].prevNode = node;
         pq.queue(grid[r][c]);
