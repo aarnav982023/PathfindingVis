@@ -10,7 +10,7 @@ const dijkstra = (grid, startNode, endNode) => {
   });
   grid.forEach(row =>
     row.forEach(node => {
-      if (node.isStart) {
+      if (node.row === startNode.row && node.col === startNode.column) {
         node.distance = 0;
       } else node.distance = Infinity;
       node.prevNode = null;
@@ -22,7 +22,7 @@ const dijkstra = (grid, startNode, endNode) => {
     const { row, col } = node;
     if (grid[row][col].isVisited) continue;
     if (node.distance === Infinity) break;
-    if (node.isEnd) {
+    if (node.row === endNode.row && node.col === endNode.column) {
       shortestPath = getShortestPath(node);
       break;
     }

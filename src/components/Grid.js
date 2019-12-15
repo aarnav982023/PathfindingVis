@@ -11,6 +11,7 @@ let selectStart = false;
 let selectEnd = false;
 let selectWall = false;
 let isAnimating = false;
+let isAnimated = false;
 
 class Grid extends React.Component {
   constructor(props) {
@@ -53,6 +54,9 @@ class Grid extends React.Component {
         <button onClick={this.visualizeDijkstra} disabled={isAnimating}>
           dijkstra
         </button>
+        <button onClick={this.clearGrid} disabled={isAnimating}>
+          reset
+        </button>
         <div className="grid-container">
           <table className="grid">
             <tbody>{nodes}</tbody>
@@ -72,8 +76,9 @@ class Grid extends React.Component {
     }
     if (selectWall) {
       selectWall = false;
-      this.setState({});
-    } else this.setState({ grid });
+      await this.setState({});
+    }
+    this.setState({ grid });
   };
 
   getInitGrid = () => {
@@ -100,7 +105,6 @@ class Grid extends React.Component {
     document.documentElement.style.setProperty("--row", rows);
     document.documentElement.style.setProperty("--column", columns);
   };
-
   onMouseClick = (row, column) => {
     if (isAnimating) return;
     if (selectStart) {
@@ -140,10 +144,12 @@ class Grid extends React.Component {
     if (selectStart) {
       if (row !== endNode.row || column !== endNode.column) {
         this.nodeRefs[row][column].current.classList.toggle("start-node");
+        if (isAnimated) this.visualizeRealTime({ row, column }, endNode);
       }
     } else if (selectEnd) {
       if (row !== startNode.row || column !== startNode.column) {
         this.nodeRefs[row][column].current.classList.toggle("end-node");
+        if (isAnimated) this.visualizeRealTime(startNode, { row, column });
       }
     } else if (selectWall) {
       if (
@@ -155,16 +161,6 @@ class Grid extends React.Component {
         grid[row][column].isWall = true;
       }
     }
-    //Changing the grid and thus rerendering the dom. Slower than the above
-    /*if (selectStart) {
-      if (row !== endNode.row || column !== endNode.column) {
-        this.changeGridStartNode(row, column);
-      }
-    } else if (selectEnd) {
-      if (row !== startNode.row || column !== startNode.column) {
-        this.changeGridEndNode(row, column);
-      }
-    }*/
   };
   getRefs = () => {
     let refs = [];
@@ -194,22 +190,36 @@ class Grid extends React.Component {
       row.forEach(node => {
         node.isShortestPath = false;
         node.isVisited = false;
+        this.nodeRefs[node.row][node.col].current.classList.remove("visited");
+        this.nodeRefs[node.row][node.col].current.classList.remove(
+          "shortest-path"
+        );
+        this.nodeRefs[node.row][node.col].current.classList.remove(
+          "visited-anim"
+        );
+        this.nodeRefs[node.row][node.col].current.classList.remove(
+          "shortest-path-anim"
+        );
       })
     );
+  };
+  clearGrid = () => {
+    isAnimated = false;
+    this.setGrid();
   };
   visualizeDijkstra = async () => {
     isAnimating = true;
     let grid = this.state.grid;
-    this.clearVisited(grid);
     await this.setGrid(grid);
+    this.clearVisited(grid);
     const response = dijkstra(grid, startNode, endNode);
     const { visitedNodes, shortestPath } = response;
-    visitedNodes.shift();
-    shortestPath.shift();
-    shortestPath.pop();
     this.animate(visitedNodes, shortestPath, grid);
   };
   animate = (visitedNodes, shortestPath, grid) => {
+    visitedNodes.shift();
+    shortestPath.shift();
+    shortestPath.pop();
     if (visitedNodes.length === 0) {
       this.setAnimatingFalse();
       this.setGrid(grid);
@@ -218,7 +228,7 @@ class Grid extends React.Component {
     for (let i = 0; i < visitedNodes.length; i++) {
       const { row, col } = visitedNodes[i];
       setTimeout(() => {
-        this.nodeRefs[row][col].current.classList.add("visited");
+        this.nodeRefs[row][col].current.classList.add("visited-anim");
         if (i === visitedNodes.length - 1) {
           if (shortestPath.length) this.animateShortestPath(shortestPath, grid);
           else {
@@ -226,14 +236,15 @@ class Grid extends React.Component {
             this.setGrid(grid);
           }
         }
-      }, 5 * i);
+      }, 3 * i);
     }
+    isAnimated = true;
   };
   animateShortestPath = (shortestPath, grid) => {
     for (let i = 0; i < shortestPath.length; i++) {
       const { row, col } = shortestPath[i];
       setTimeout(() => {
-        this.nodeRefs[row][col].current.classList.add("shortest-path");
+        this.nodeRefs[row][col].current.classList.add("shortest-path-anim");
         if (i === shortestPath.length - 1) {
           this.setAnimatingFalse();
           setTimeout(() => this.setGrid(grid), 5 * i);
@@ -243,6 +254,21 @@ class Grid extends React.Component {
   };
   setAnimatingFalse = () => {
     isAnimating = false;
+  };
+
+  visualizeRealTime = (startNode, endNode) => {
+    let grid = this.state.grid;
+    this.clearVisited(grid);
+    const { visitedNodes, shortestPath } = dijkstra(grid, startNode, endNode);
+    visitedNodes.shift();
+    shortestPath.shift();
+    shortestPath.pop();
+    visitedNodes.forEach(node =>
+      this.nodeRefs[node.row][node.col].current.classList.add("visited")
+    );
+    shortestPath.forEach(node =>
+      this.nodeRefs[node.row][node.col].current.classList.add("shortest-path")
+    );
   };
 }
 
