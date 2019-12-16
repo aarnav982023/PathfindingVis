@@ -3,10 +3,10 @@ import Node from "./Node";
 import dijkstra from "../algorithms/dijkstra";
 import "./Grid.css";
 
-const rows = 26;
-const columns = 65;
-let startNode = { row: 13, column: 15 };
-let endNode = { row: 13, column: 45 };
+const rows = 34;
+const columns = 85;
+let startNode = { row: 16, column: 15 };
+let endNode = { row: 16, column: 63 };
 let selectStart = false;
 let selectEnd = false;
 let selectWall = false;
@@ -236,7 +236,7 @@ class Grid extends React.Component {
             this.setGrid(grid);
           }
         }
-      }, 3 * i);
+      }, 6 * i);
     }
     isAnimated = true;
   };

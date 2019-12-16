@@ -39,7 +39,7 @@ const dijkstra = (grid, startNode, endNode) => {
         grid[r] &&
         grid[r][c] &&
         !grid[r][c].isVisited &&
-        !grid[r][c].isWall
+        (!grid[r][c].isWall || (r === endNode.row && c === endNode.column))
       ) {
         grid[r][c].distance = Math.min(node.distance + 1, grid[r][c].distance);
         grid[r][c].prevNode = node;

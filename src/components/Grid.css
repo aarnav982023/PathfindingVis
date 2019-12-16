@@ -2,9 +2,12 @@
     --row : 30;
     --column : 80;
 }
-
 .grid-container{
-    padding-top: 5vw;
+    margin:5vw 1vw 0 1vw;
+    padding:1vw;
+    border-radius : 1vw;
+    background-color:white;
+    box-shadow: 3px 3px 12px lightgrey;
 }
 .grid { 
     border-collapse: collapse;
@@ -20,12 +23,6 @@
 .node{
     width:100%;
     height:100%;
-}
-.start-node {
-    background-color:green !important;
-}
-.end-node{
-    background-color:red !important; 
 }
 .visited-anim{
     animation: onvisit 0.5s;
@@ -48,6 +45,12 @@
 }
 .wall {
     background-image : linear-gradient(black,black) !important;
+}
+.end-node{
+    background-image:linear-gradient(red,red) !important; 
+}
+.start-node {
+    background-image:linear-gradient(green,green) !important;
 }
 @keyframes onshortpath{
     0%{
