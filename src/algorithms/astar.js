@@ -27,6 +27,8 @@ const astar = (grid, startNode, endNode) => {
     const node = pq.dequeue();
     const { row, col } = node;
     if (grid[row][col].isVisited) continue;
+    grid[row][col].isVisited = true;
+    visitedNodes.push(node);
     if (node.row === endNode.row && node.col === endNode.column) {
       shortestPath = getShortestPath(node);
       break;
@@ -37,6 +39,8 @@ const astar = (grid, startNode, endNode) => {
       [0, 1],
       [0, -1]
     ];
+    //with diag
+    //n.push([-1, 1], [1, 1], [-1, -1], [1, -1]);
     for (let j = 0; j < n.length; j++) {
       const i = n[j];
       const r = row + i[0];
@@ -47,7 +51,14 @@ const astar = (grid, startNode, endNode) => {
         !grid[r][c].isVisited &&
         (!grid[r][c].isWall || (r === endNode.row && c === endNode.column))
       ) {
-        let gNew = grid[row][col].g + 1;
+        if (r === endNode.row && c === endNode.column) {
+          grid[r][c].isVisited = true;
+          grid[r][c].prevNode = grid[row][col];
+          shortestPath = getShortestPath(grid[r][c]);
+          return { visitedNodes, shortestPath };
+        }
+        const dist = Math.abs(i[0]) === 1 && Math.abs(i[1]) === 1 ? 1.4 : 1;
+        let gNew = grid[row][col].g + dist;
         let hNew = calculateHeuristic(r, c, endNode);
         let fNew = gNew + hNew;
         if (grid[r][c].f === Infinity || grid[r][c].f > fNew) {
@@ -59,13 +70,14 @@ const astar = (grid, startNode, endNode) => {
         }
       }
     }
-    grid[row][col].isVisited = true;
-    visitedNodes.push(node);
   }
   return { visitedNodes, shortestPath };
 };
 
 const calculateHeuristic = (row, col, endNode) => {
+  //Manhatten
+  //return Math.abs(row - endNode.row) + Math.abs(col - endNode.column);
+  //Euclidean
   return Math.sqrt(
     (row - endNode.row) * (row - endNode.row) +
       (col - endNode.column) * (col - endNode.column)

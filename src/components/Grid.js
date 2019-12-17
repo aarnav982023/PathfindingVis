@@ -230,7 +230,6 @@ class Grid extends React.Component {
     this.clearVisited(grid);
     const response = this.getResponseFromAlgo(grid, startNode, endNode, algoId);
     const { visitedNodes, shortestPath } = response;
-    console.log(response);
     this.animate(visitedNodes, shortestPath, grid);
   };
   getResponseFromAlgo = (grid, sn, en, algoId) => {

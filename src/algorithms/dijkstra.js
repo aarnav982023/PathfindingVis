@@ -21,11 +21,9 @@ const dijkstra = (grid, startNode, endNode) => {
     const node = pq.dequeue();
     const { row, col } = node;
     if (grid[row][col].isVisited) continue;
+    grid[row][col].isVisited = true;
+    visitedNodes.push(node);
     //if (node.distance === Infinity) break;
-    if (node.row === endNode.row && node.col === endNode.column) {
-      shortestPath = getShortestPath(node);
-      break;
-    }
     const n = [
       [1, 0],
       [-1, 0],
@@ -34,7 +32,8 @@ const dijkstra = (grid, startNode, endNode) => {
     ];
     //with diag
     //n.push([-1, 1], [1, 1], [-1, -1], [1, -1]);
-    n.forEach(i => {
+    for (let j = 0; j < n.length; j++) {
+      const i = n[j];
       const r = row + i[0];
       const c = col + i[1];
       if (
@@ -43,6 +42,12 @@ const dijkstra = (grid, startNode, endNode) => {
         !grid[r][c].isVisited &&
         (!grid[r][c].isWall || (r === endNode.row && c === endNode.column))
       ) {
+        if (r === endNode.row && c === endNode.column) {
+          grid[r][c].isVisited = true;
+          grid[r][c].prevNode = grid[row][col];
+          shortestPath = getShortestPath(grid[r][c]);
+          return { visitedNodes, shortestPath };
+        }
         const dist = Math.abs(i[0]) === 1 && Math.abs(i[1]) === 1 ? 1.4 : 1;
         if (node.distance + dist < grid[r][c].distance) {
           grid[r][c].prevNode = node;
@@ -50,9 +55,7 @@ const dijkstra = (grid, startNode, endNode) => {
         }
         pq.queue(grid[r][c]);
       }
-    });
-    grid[row][col].isVisited = true;
-    visitedNodes.push(node);
+    }
   }
   return { visitedNodes, shortestPath };
 };
