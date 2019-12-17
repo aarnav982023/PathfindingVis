@@ -120,7 +120,7 @@ class Grid extends React.Component {
     document.documentElement.style.setProperty("--row", rows);
     document.documentElement.style.setProperty("--column", columns);
   };
-  onMouseClick = (row, column) => {
+  onMouseClick = async (row, column) => {
     if (isAnimating) return;
     if (selectStart) {
       if (row !== endNode.row || column !== endNode.column) {
@@ -146,7 +146,8 @@ class Grid extends React.Component {
       selectEnd = true;
     } else if (selectWall) {
       selectWall = false;
-      this.setState({});
+      if (isAnimated) this.visualizeRealTime(startNode, endNode);
+      await this.setGrid(this.state.grid);
     } else {
       selectWall = true;
       this.nodeRefs[row][column].current.classList.add("wall");
