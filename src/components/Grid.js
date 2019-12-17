@@ -1,6 +1,7 @@
 import React from "react";
 import Node from "./Node";
 import dijkstra from "../algorithms/dijkstra";
+import astar from "../algorithms/astar";
 import "./Grid.css";
 
 const rows = 34;
@@ -12,6 +13,7 @@ let selectEnd = false;
 let selectWall = false;
 let isAnimating = false;
 let isAnimated = false;
+let rtAlgoId = 0;
 
 class Grid extends React.Component {
   constructor(props) {
@@ -51,8 +53,21 @@ class Grid extends React.Component {
     this.setRowColumnStyle();
     return (
       <div>
-        <button onClick={this.visualizeDijkstra} disabled={isAnimating}>
+        <button
+          onClick={() => {
+            this.visualize(0);
+          }}
+          disabled={isAnimating}
+        >
           dijkstra
+        </button>
+        <button
+          onClick={() => {
+            this.visualize(1);
+          }}
+          disabled={isAnimating}
+        >
+          A*
         </button>
         <button onClick={this.clearGrid} disabled={isAnimating}>
           reset
@@ -207,14 +222,26 @@ class Grid extends React.Component {
     isAnimated = false;
     this.setGrid();
   };
-  visualizeDijkstra = async () => {
+  visualize = async algoId => {
     isAnimating = true;
+    rtAlgoId = algoId;
     let grid = this.state.grid;
     await this.setGrid(grid);
     this.clearVisited(grid);
-    const response = dijkstra(grid, startNode, endNode);
+    const response = this.getResponseFromAlgo(grid, startNode, endNode, algoId);
     const { visitedNodes, shortestPath } = response;
+    console.log(response);
     this.animate(visitedNodes, shortestPath, grid);
+  };
+  getResponseFromAlgo = (grid, sn, en, algoId) => {
+    switch (algoId) {
+      case 0:
+        return dijkstra(grid, sn, en);
+      case 1:
+        return astar(grid, sn, en);
+      default:
+        break;
+    }
   };
   animate = (visitedNodes, shortestPath, grid) => {
     visitedNodes.shift();
@@ -256,10 +283,15 @@ class Grid extends React.Component {
     isAnimating = false;
   };
 
-  visualizeRealTime = (startNode, endNode) => {
+  visualizeRealTime = (sn, en) => {
     let grid = this.state.grid;
     this.clearVisited(grid);
-    const { visitedNodes, shortestPath } = dijkstra(grid, startNode, endNode);
+    const { visitedNodes, shortestPath } = this.getResponseFromAlgo(
+      grid,
+      sn,
+      en,
+      rtAlgoId
+    );
     visitedNodes.shift();
     shortestPath.shift();
     shortestPath.pop();
