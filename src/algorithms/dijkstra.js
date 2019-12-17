@@ -32,6 +32,8 @@ const dijkstra = (grid, startNode, endNode) => {
       [0, 1],
       [0, -1]
     ];
+    //with diag
+    //n.push([-1, 1], [1, 1], [-1, -1], [1, -1]);
     n.forEach(i => {
       const r = row + i[0];
       const c = col + i[1];
@@ -41,8 +43,11 @@ const dijkstra = (grid, startNode, endNode) => {
         !grid[r][c].isVisited &&
         (!grid[r][c].isWall || (r === endNode.row && c === endNode.column))
       ) {
-        grid[r][c].distance = Math.min(node.distance + 1, grid[r][c].distance);
-        grid[r][c].prevNode = node;
+        const dist = Math.abs(i[0]) === 1 && Math.abs(i[1]) === 1 ? 1.4 : 1;
+        if (node.distance + dist < grid[r][c].distance) {
+          grid[r][c].prevNode = node;
+          grid[r][c].distance = node.distance + dist;
+        }
         pq.queue(grid[r][c]);
       }
     });
