@@ -1,11 +1,13 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Node from "./Node";
 import dijkstra from "../algorithms/dijkstra";
 import astar from "../algorithms/astar";
 import "./Grid.css";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
 
-const rows = 34;
-const columns = 85;
+const rows = 32;
+const columns = 75;
 let startNode = { row: 16, column: 15 };
 let endNode = { row: 16, column: 63 };
 let selectStart = false;
@@ -15,7 +17,7 @@ let isAnimating = false;
 let isAnimated = false;
 let rtAlgoId = 0;
 
-class Grid extends React.Component {
+class TGrid extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -52,32 +54,55 @@ class Grid extends React.Component {
     }
     this.setRowColumnStyle();
     return (
-      <div>
-        <button
-          onClick={() => {
-            this.visualize(0);
-          }}
-          disabled={isAnimating}
+      <Fragment>
+        <Grid
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="center"
+          spacing={2}
         >
-          dijkstra
-        </button>
-        <button
-          onClick={() => {
-            this.visualize(1);
-          }}
-          disabled={isAnimating}
-        >
-          A*
-        </button>
-        <button onClick={this.clearGrid} disabled={isAnimating}>
-          reset
-        </button>
+          <Grid item>
+            <Button
+              variant="contained"
+              onClick={() => {
+                this.visualize(0);
+              }}
+              disabled={isAnimating}
+              disableElevation
+            >
+              dijkstra
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              variant="contained"
+              onClick={() => {
+                this.visualize(1);
+              }}
+              disabled={isAnimating}
+              disableElevation
+            >
+              A*
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              variant="contained"
+              onClick={this.clearGrid}
+              disabled={isAnimating}
+              disableElevation
+            >
+              reset
+            </Button>
+          </Grid>
+        </Grid>
         <div className="grid-container">
           <table className="grid">
             <tbody>{nodes}</tbody>
           </table>
         </div>
-      </div>
+      </Fragment>
     );
   }
   setGrid = async (grid = this.getInitGrid()) => {
@@ -117,8 +142,8 @@ class Grid extends React.Component {
     };
   };
   setRowColumnStyle = () => {
-    document.documentElement.style.setProperty("--row", rows);
-    document.documentElement.style.setProperty("--column", columns);
+    document.documentElement.style.setProperty("--rows", rows);
+    document.documentElement.style.setProperty("--columns", columns);
   };
   onMouseClick = async (row, column) => {
     if (isAnimating) return;
@@ -304,4 +329,4 @@ class Grid extends React.Component {
   };
 }
 
-export default Grid;
+export default TGrid;
