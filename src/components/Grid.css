@@ -3,16 +3,17 @@
     --columns : 75;
 }
 .grid-container{
-    margin:5vh 1vw 0 1vw;
+    margin:8vh 1vw 0 1vw;
     padding:1vw;
     border-radius : 1vw;
     background-color:white;
     box-shadow: 3px 3px 12px lightgrey;
+    width:100%;
 }
 .grid { 
     border-collapse: collapse;
     width:100%;
-    height:calc(100vw/var(--columns)*var(--rows));
+    height:calc(width / var(--columns) * var(--rows));
 }   
 .grid td{
     border:0.1px solid rgb(176, 241, 241);
@@ -67,4 +68,8 @@
     100%{
         background-color:dodgerblue;
     }
+}
+
+.test{
+    display:flex;
 }

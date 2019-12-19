@@ -1,10 +1,9 @@
-import React, { Fragment } from "react";
+import React from "react";
 import Node from "./Node";
 import dijkstra from "../algorithms/dijkstra";
 import astar from "../algorithms/astar";
 import "./Grid.css";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
+import ResponsiveDrawer from "./ResponsiveDrawer";
 
 const rows = 32;
 const columns = 75;
@@ -24,9 +23,18 @@ class TGrid extends React.Component {
       grid: []
     };
     this.nodeRefs = this.getRefs();
+    this.gridRef = React.createRef();
   }
-  componentDidMount() {
-    this.setGrid();
+  async componentDidMount() {
+    await this.setGrid();
+    this.gridRef.current.style.height = `${(this.gridRef.current.offsetWidth /
+      columns) *
+      rows}px`;
+    window.addEventListener("resize", e => {
+      this.gridRef.current.style.height = `${(this.gridRef.current.offsetWidth /
+        columns) *
+        rows}px`;
+    });
   }
   render() {
     if (this.state.grid.length === 0) return <div>Loading...</div>;
@@ -54,55 +62,18 @@ class TGrid extends React.Component {
     }
     this.setRowColumnStyle();
     return (
-      <Fragment>
-        <Grid
-          container
-          direction="row"
-          justify="flex-start"
-          alignItems="center"
-          spacing={2}
-        >
-          <Grid item>
-            <Button
-              variant="contained"
-              onClick={() => {
-                this.visualize(0);
-              }}
-              disabled={isAnimating}
-              disableElevation
-            >
-              dijkstra
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              onClick={() => {
-                this.visualize(1);
-              }}
-              disabled={isAnimating}
-              disableElevation
-            >
-              A*
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              onClick={this.clearGrid}
-              disabled={isAnimating}
-              disableElevation
-            >
-              reset
-            </Button>
-          </Grid>
-        </Grid>
+      <div className="test">
+        <ResponsiveDrawer
+          visualize={this.visualize}
+          isAnimating={isAnimating}
+          clearGrid={this.clearGrid}
+        />
         <div className="grid-container">
-          <table className="grid">
+          <table className="grid" ref={this.gridRef}>
             <tbody>{nodes}</tbody>
           </table>
         </div>
-      </Fragment>
+      </div>
     );
   }
   setGrid = async (grid = this.getInitGrid()) => {
