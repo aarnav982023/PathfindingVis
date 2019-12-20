@@ -10,7 +10,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 const drawerWidth = 300;
@@ -29,7 +29,11 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth
-    }
+    },
+    border: 0,
+    backgroundColor: "white",
+    color: "black",
+    boxShadow: "none"
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -38,8 +42,12 @@ const useStyles = makeStyles(theme => ({
     }
   },
   toolbar: theme.mixins.toolbar,
+  toolButton: {
+    marginRight: "1vw"
+  },
   drawerPaper: {
-    width: drawerWidth
+    width: drawerWidth,
+    border: 0
   },
   content: {
     flexGrow: 1,
@@ -52,41 +60,33 @@ function ResponsiveDrawer(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
+  const handleListItemClick = (event, index) => {
+    setSelectedIndex(index);
+  };
   const drawer = (
     <div>
       <div className={classes.toolbar} />
       <List>
         <ListItem
           button
-          onClick={() => {
-            props.visualize(0);
-          }}
+          selected={selectedIndex === 0}
+          onClick={event => handleListItemClick(event, 0)}
           disabled={props.isAnimating}
         >
           <ListItemText primary="Dijkstra"></ListItemText>
         </ListItem>
         <ListItem
           button
-          onClick={() => {
-            props.visualize(1);
-          }}
+          selected={selectedIndex === 1}
+          onClick={event => handleListItemClick(event, 1)}
           disabled={props.isAnimating}
         >
           <ListItemText primary="A*"></ListItemText>
-        </ListItem>
-        <ListItem
-          button
-          onClick={() => {
-            props.clearGrid();
-          }}
-          disabled={props.isAnimating}
-        >
-          <ListItemText primary="Clear Board"></ListItemText>
         </ListItem>
       </List>
     </div>
@@ -106,9 +106,25 @@ function ResponsiveDrawer(props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
-            Pathfinding
-          </Typography>
+          <Button
+            className={classes.toolButton}
+            variant="contained"
+            disableElevation
+            onClick={() => props.visualize(selectedIndex)}
+            disabled={props.isAnimating}
+          >
+            Visualize
+          </Button>
+          <Button
+            variant="contained"
+            disableElevation
+            onClick={() => {
+              props.clearGrid();
+            }}
+            disabled={props.isAnimating}
+          >
+            Clear
+          </Button>
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer}>

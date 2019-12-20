@@ -2,12 +2,14 @@
     --rows : 32;
     --columns : 75;
 }
-.grid-container{
-    margin:8vh 1vw 0 1vw;
-    padding:1vw;
-    border-radius : 1vw;
+#body{
     background-color:white;
-    box-shadow: 3px 3px 12px lightgrey;
+}
+.grid-container{
+    padding: 0 1vw 1vw 1vw;
+    --border-radius : 1vw;
+    background-color:white;
+    --box-shadow: 3px 3px 12px lightgrey;
     width:100%;
 }
 .grid { 
@@ -69,7 +71,29 @@
         background-color:dodgerblue;
     }
 }
-
-.test{
+.app{
     display:flex;
+}
+.content{
+    display: flex;
+    width:100%;
+    margin-top:8vh;
+    padding:1vw;
+    height:100%;
+}
+.placeholder{
+    width:40%;
+    height:auto;
+    padding:1vw;
+    border-radius: 1vw;
+    box-shadow: 1px 1px 9px lightgrey;
+}
+
+@media only screen and (max-width:1200px){
+    .content{
+        flex-direction: column;
+    }
+    .placeholder{
+        width:auto;
+    }
 }

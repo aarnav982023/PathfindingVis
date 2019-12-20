@@ -5,10 +5,10 @@ import astar from "../algorithms/astar";
 import "./Grid.css";
 import ResponsiveDrawer from "./ResponsiveDrawer";
 
-const rows = 32;
-const columns = 75;
-let startNode = { row: 16, column: 15 };
-let endNode = { row: 16, column: 63 };
+const rows = 41;
+const columns = 55;
+let startNode = { row: 20, column: 11 };
+let endNode = { row: 20, column: 43 };
 let selectStart = false;
 let selectEnd = false;
 let selectWall = false;
@@ -62,16 +62,19 @@ class TGrid extends React.Component {
     }
     this.setRowColumnStyle();
     return (
-      <div className="test">
+      <div className="app">
         <ResponsiveDrawer
           visualize={this.visualize}
           isAnimating={isAnimating}
           clearGrid={this.clearGrid}
         />
-        <div className="grid-container">
-          <table className="grid" ref={this.gridRef}>
-            <tbody>{nodes}</tbody>
-          </table>
+        <div className="content">
+          <div className="grid-container">
+            <table className="grid" ref={this.gridRef}>
+              <tbody>{nodes}</tbody>
+            </table>
+          </div>
+          <div className="placeholder"></div>
         </div>
       </div>
     );
@@ -259,7 +262,7 @@ class TGrid extends React.Component {
             this.setGrid(grid);
           }
         }
-      }, 6 * i);
+      }, 10 * i);
     }
     isAnimated = true;
   };
