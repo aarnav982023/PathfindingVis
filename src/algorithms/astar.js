@@ -1,6 +1,6 @@
 import PriorityQueue from "js-priority-queue";
 
-const astar = (grid, startNode, endNode) => {
+const astar = (grid, startNode, endNode, heuristic, allowDiag) => {
   let visitedNodes = [];
   let shortestPath = [];
   let pq = new PriorityQueue({
@@ -40,7 +40,7 @@ const astar = (grid, startNode, endNode) => {
       [0, -1]
     ];
     //with diag
-    //n.push([-1, 1], [1, 1], [-1, -1], [1, -1]);
+    if (allowDiag) n.push([-1, 1], [1, 1], [-1, -1], [1, -1]);
     for (let j = 0; j < n.length; j++) {
       const i = n[j];
       const r = row + i[0];
@@ -59,7 +59,7 @@ const astar = (grid, startNode, endNode) => {
         }
         const dist = Math.abs(i[0]) === 1 && Math.abs(i[1]) === 1 ? 1.4 : 1;
         let gNew = grid[row][col].g + dist;
-        let hNew = calculateHeuristic(r, c, endNode);
+        let hNew = calculateHeuristic(r, c, endNode, heuristic);
         let fNew = gNew + hNew;
         if (grid[r][c].f === Infinity || grid[r][c].f > fNew) {
           grid[r][c].g = gNew;
@@ -74,14 +74,16 @@ const astar = (grid, startNode, endNode) => {
   return { visitedNodes, shortestPath };
 };
 
-const calculateHeuristic = (row, col, endNode) => {
+const calculateHeuristic = (row, col, endNode, heuristic) => {
   //Manhatten
-  //return Math.abs(row - endNode.row) + Math.abs(col - endNode.column);
+  if (heuristic === "manhatten")
+    return Math.abs(row - endNode.row) + Math.abs(col - endNode.column);
   //Euclidean
-  return Math.sqrt(
-    (row - endNode.row) * (row - endNode.row) +
-      (col - endNode.column) * (col - endNode.column)
-  );
+  if (heuristic === "euclidean")
+    return Math.sqrt(
+      (row - endNode.row) * (row - endNode.row) +
+        (col - endNode.column) * (col - endNode.column)
+    );
 };
 
 const getShortestPath = node => {

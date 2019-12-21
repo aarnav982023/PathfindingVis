@@ -15,6 +15,8 @@ let selectWall = false;
 let isAnimating = false;
 let isAnimated = false;
 let rtAlgoId = 0;
+let rtHeuristic = "";
+let rtAllowDiag = false;
 
 class TGrid extends React.Component {
   constructor(props) {
@@ -222,22 +224,31 @@ class TGrid extends React.Component {
     isAnimated = false;
     this.setGrid();
   };
-  visualize = async algoId => {
+  visualize = async (algoId, heuristic = "", allowDiag) => {
     isAnimating = true;
     rtAlgoId = algoId;
+    rtHeuristic = heuristic;
+    rtAllowDiag = allowDiag;
     let grid = this.state.grid;
     await this.setGrid(grid);
     this.clearVisited(grid);
-    const response = this.getResponseFromAlgo(grid, startNode, endNode, algoId);
+    const response = this.getResponseFromAlgo(
+      grid,
+      startNode,
+      endNode,
+      algoId,
+      heuristic,
+      allowDiag
+    );
     const { visitedNodes, shortestPath } = response;
     this.animate(visitedNodes, shortestPath, grid);
   };
-  getResponseFromAlgo = (grid, sn, en, algoId) => {
+  getResponseFromAlgo = (grid, sn, en, algoId, heuristic, allowDiag) => {
     switch (algoId) {
       case 0:
-        return dijkstra(grid, sn, en);
+        return dijkstra(grid, sn, en, allowDiag);
       case 1:
-        return astar(grid, sn, en);
+        return astar(grid, sn, en, heuristic, allowDiag);
       default:
         break;
     }
@@ -289,7 +300,9 @@ class TGrid extends React.Component {
       grid,
       sn,
       en,
-      rtAlgoId
+      rtAlgoId,
+      rtHeuristic,
+      rtAllowDiag
     );
     visitedNodes.shift();
     shortestPath.shift();

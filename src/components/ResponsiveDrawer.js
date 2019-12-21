@@ -1,16 +1,24 @@
 import React from "react";
 import PropTypes from "prop-types";
 import AppBar from "@material-ui/core/AppBar";
+import Card from "@material-ui/core/Card";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
+import CardContent from "@material-ui/core/CardContent";
+import Collapse from "@material-ui/core/Collapse";
+import Typography from "@material-ui/core/Typography";
+import Radio from "@material-ui/core/Radio";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormLabel from "@material-ui/core/FormLabel";
+import RadioGroup from "@material-ui/core/RadioGroup";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 const drawerWidth = 300;
@@ -52,6 +60,14 @@ const useStyles = makeStyles(theme => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3)
+  },
+  card: {
+    width: "100%",
+    borderRadius: "0.5vw"
+  },
+  cardHeadText: {
+    padding: "1vh",
+    fontSize: "24px"
   }
 }));
 
@@ -60,7 +76,9 @@ function ResponsiveDrawer(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const [heuristic, setHeuristic] = React.useState({ 1: "euclidean" });
+  const [allowDiag, setAllowDiag] = React.useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -68,25 +86,68 @@ function ResponsiveDrawer(props) {
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
   };
+  const handleHeuristicChange = event => {
+    setHeuristic({ [selectedIndex]: event.target.value });
+  };
+
   const drawer = (
     <div>
       <div className={classes.toolbar} />
       <List>
-        <ListItem
-          button
-          selected={selectedIndex === 0}
-          onClick={event => handleListItemClick(event, 0)}
-          disabled={props.isAnimating}
-        >
-          <ListItemText primary="Dijkstra"></ListItemText>
+        <ListItem>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={allowDiag}
+                onChange={() => setAllowDiag(!allowDiag)}
+                value="checkedA"
+              />
+            }
+            label="Allow Diagonals"
+          />
         </ListItem>
         <ListItem
-          button
-          selected={selectedIndex === 1}
-          onClick={event => handleListItemClick(event, 1)}
-          disabled={props.isAnimating}
+          selected={selectedIndex === 0}
+          onClick={event => {
+            handleListItemClick(event, 0);
+          }}
         >
-          <ListItemText primary="A*"></ListItemText>
+          <Card className={classes.card}>
+            <Typography align="center" className={classes.cardHeadText}>
+              Dijkstra
+            </Typography>
+          </Card>
+        </ListItem>
+        <ListItem
+          onClick={event => {
+            handleListItemClick(event, 1);
+          }}
+        >
+          <Card className={classes.card}>
+            <Typography align="center" className={classes.cardHeadText}>
+              A*
+            </Typography>
+            <Collapse in={selectedIndex === 1} timeout="auto" unmountOnExit>
+              <CardContent>
+                <FormLabel>Heuristic</FormLabel>
+                <RadioGroup
+                  value={heuristic[1]}
+                  onChange={handleHeuristicChange}
+                >
+                  <FormControlLabel
+                    value="euclidean"
+                    control={<Radio />}
+                    label="Euclidean"
+                  />
+                  <FormControlLabel
+                    value="manhatten"
+                    control={<Radio />}
+                    label="Manhatten"
+                  />
+                </RadioGroup>
+              </CardContent>
+            </Collapse>
+          </Card>
         </ListItem>
       </List>
     </div>
@@ -110,7 +171,13 @@ function ResponsiveDrawer(props) {
             className={classes.toolButton}
             variant="contained"
             disableElevation
-            onClick={() => props.visualize(selectedIndex)}
+            onClick={() =>
+              props.visualize(
+                selectedIndex,
+                heuristic[selectedIndex],
+                allowDiag
+              )
+            }
             disabled={props.isAnimating}
           >
             Visualize

@@ -1,6 +1,6 @@
 import PriorityQueue from "js-priority-queue";
 
-const dijkstra = (grid, startNode, endNode) => {
+const dijkstra = (grid, startNode, endNode, allowDiag) => {
   let visitedNodes = [];
   let shortestPath = [];
   let pq = new PriorityQueue({
@@ -31,7 +31,7 @@ const dijkstra = (grid, startNode, endNode) => {
       [0, -1]
     ];
     //with diag
-    //n.push([-1, 1], [1, 1], [-1, -1], [1, -1]);
+    if (allowDiag) n.push([-1, 1], [1, 1], [-1, -1], [1, -1]);
     for (let j = 0; j < n.length; j++) {
       const i = n[j];
       const r = row + i[0];

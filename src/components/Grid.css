@@ -6,16 +6,16 @@
     background-color:white;
 }
 .grid-container{
-    padding: 0 1vw 1vw 1vw;
-    --border-radius : 1vw;
+    padding: 1vw;
+    margin-right: 1vw;
+    border-radius : 1vw;
     background-color:white;
-    --box-shadow: 3px 3px 12px lightgrey;
+    box-shadow: 1px 1px 9px lightgrey;
     width:100%;
 }
 .grid { 
     border-collapse: collapse;
     width:100%;
-    height:calc(width / var(--columns) * var(--rows));
 }   
 .grid td{
     border:0.1px solid rgb(176, 241, 241);
@@ -78,7 +78,7 @@
     display: flex;
     width:100%;
     margin-top:8vh;
-    padding:1vw;
+    padding:0 1vw 1vw 1vw;
     height:100%;
 }
 .placeholder{
