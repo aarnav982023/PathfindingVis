@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import AppBar from "@material-ui/core/AppBar";
-import Card from "@material-ui/core/Card";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
@@ -19,7 +18,13 @@ import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import {
+  makeStyles,
+  useTheme,
+  createMuiTheme,
+  ThemeProvider
+} from "@material-ui/core/styles";
+import { Divider } from "@material-ui/core";
 
 const drawerWidth = 300;
 
@@ -39,7 +44,7 @@ const useStyles = makeStyles(theme => ({
       marginLeft: drawerWidth
     },
     border: 0,
-    backgroundColor: "white",
+    backgroundColor: theme.palette.background.default,
     color: "black",
     boxShadow: "none"
   },
@@ -54,8 +59,8 @@ const useStyles = makeStyles(theme => ({
     marginRight: "1vw"
   },
   drawerPaper: {
-    width: drawerWidth,
-    border: 0
+    width: drawerWidth
+    //border: 0
   },
   content: {
     flexGrow: 1,
@@ -67,9 +72,22 @@ const useStyles = makeStyles(theme => ({
   },
   cardHeadText: {
     padding: "1vh",
-    fontSize: "24px"
+    fontSize: "1rem"
+  },
+  test: {
+    padding: "1vh 0 1vh 1vh"
   }
 }));
+
+const myTheme = createMuiTheme({
+  overrides: {
+    MuiListItem: {
+      root: {
+        fontSize: "1rem"
+      }
+    }
+  }
+});
 
 function ResponsiveDrawer(props) {
   const { container } = props;
@@ -77,7 +95,7 @@ function ResponsiveDrawer(props) {
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
-  const [heuristic, setHeuristic] = React.useState({ 1: "euclidean" });
+  const [heuristic, setHeuristic] = React.useState({ 1: "manhatten" });
   const [allowDiag, setAllowDiag] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -91,42 +109,43 @@ function ResponsiveDrawer(props) {
   };
 
   const drawer = (
-    <div>
-      <div className={classes.toolbar} />
-      <List>
-        <ListItem>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={allowDiag}
-                onChange={() => setAllowDiag(!allowDiag)}
-                value="checkedA"
-              />
-            }
-            label="Allow Diagonals"
-          />
-        </ListItem>
-        <ListItem
-          selected={selectedIndex === 0}
-          onClick={event => {
-            handleListItemClick(event, 0);
-          }}
-        >
-          <Card className={classes.card}>
-            <Typography align="center" className={classes.cardHeadText}>
-              Dijkstra
-            </Typography>
-          </Card>
-        </ListItem>
-        <ListItem
-          onClick={event => {
-            handleListItemClick(event, 1);
-          }}
-        >
-          <Card className={classes.card}>
-            <Typography align="center" className={classes.cardHeadText}>
-              A*
-            </Typography>
+    <ThemeProvider theme={myTheme}>
+      <div>
+        <div className={classes.toolbar} />
+        <List>
+          <ListItem>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={allowDiag}
+                  onChange={() => setAllowDiag(!allowDiag)}
+                  value="allowDiagonals"
+                />
+              }
+              label="Allow Diagonals"
+            />
+          </ListItem>
+          <Divider />
+          <Typography variant="h5" className={classes.test}>
+            Algorithms
+          </Typography>
+          <ListItem
+            button
+            selected={selectedIndex === 0}
+            onClick={event => {
+              handleListItemClick(event, 0);
+            }}
+          >
+            Dijkstra
+          </ListItem>
+          <ListItem
+            button
+            selected={selectedIndex === 1}
+            onClick={event => {
+              handleListItemClick(event, 1);
+            }}
+          >
+            A*
             <Collapse in={selectedIndex === 1} timeout="auto" unmountOnExit>
               <CardContent>
                 <FormLabel>Heuristic</FormLabel>
@@ -135,22 +154,30 @@ function ResponsiveDrawer(props) {
                   onChange={handleHeuristicChange}
                 >
                   <FormControlLabel
+                    size="small"
                     value="euclidean"
                     control={<Radio />}
                     label="Euclidean"
                   />
                   <FormControlLabel
+                    size="small"
                     value="manhatten"
                     control={<Radio />}
                     label="Manhatten"
                   />
+                  <FormControlLabel
+                    size="small"
+                    value="diagonal"
+                    control={<Radio />}
+                    label="Diagonal"
+                  />
                 </RadioGroup>
               </CardContent>
             </Collapse>
-          </Card>
-        </ListItem>
-      </List>
-    </div>
+          </ListItem>
+        </List>
+      </div>
+    </ThemeProvider>
   );
 
   return (
@@ -183,6 +210,7 @@ function ResponsiveDrawer(props) {
             Visualize
           </Button>
           <Button
+            className={classes.toolButton}
             variant="contained"
             disableElevation
             onClick={() => {
@@ -191,6 +219,16 @@ function ResponsiveDrawer(props) {
             disabled={props.isAnimating}
           >
             Clear
+          </Button>
+          <Button
+            variant="contained"
+            disableElevation
+            onClick={() => {
+              props.setKruskalMaze();
+            }}
+            disabled={props.isAnimating}
+          >
+            Kruskal Maze
           </Button>
         </Toolbar>
       </AppBar>

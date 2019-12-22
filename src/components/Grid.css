@@ -1,8 +1,9 @@
 :root{
     --rows : 32;
     --columns : 75;
+    box-sizing: border-box;
 }
-#body{
+#bodys{
     background-color:white;
 }
 .grid-container{
@@ -16,26 +17,31 @@
 .grid { 
     border-collapse: collapse;
     width:100%;
-}   
+}
 .grid td{
-    border:0.1px solid rgb(176, 241, 241);
-    width:1fr;
+    --border:0.1px solid rgb(176, 241, 241);
+    border:0.1px solid rgba(75, 231, 231, 0.322); 
+    width:1fr ;
     height:1fr;
     padding:0;
 }
+
 .node{
-    width:100%;
-    height:100%;
+    --width:100%;
+    --height:100%;
+    padding:0;
 }
 .visited-anim{
     animation: onvisit 0.5s;
+    background-color:dodgerblue;
+}
+.visited{
     background-color:dodgerblue;
 }
 .shortest-path-anim{
     animation: onshortpath 0.2s;
     background-color:dodgerblue;
     background-image: linear-gradient(yellow,yellow);
-    background-repeat: no-repeat;
     transition:background-size 0.5s ease;
     background-position:50% 50%;
 }
@@ -43,17 +49,17 @@
     background-image: linear-gradient(yellow,yellow);
     background-color:dodgerblue;
 }
-.visited{
-    background-color:dodgerblue;
-}
-.wall {
-    background-image : linear-gradient(black,black) !important;
+.wall{
+     background-image : linear-gradient(black,black) !important;
+     border:0.1px solid black !important;
 }
 .end-node{
     background-image:linear-gradient(red,red) !important; 
+    border: 0.1px solid red !important;
 }
 .start-node {
     background-image:linear-gradient(green,green) !important;
+    border: 0.1px solid green !important;
 }
 @keyframes onshortpath{
     0%{
@@ -79,7 +85,7 @@
     width:100%;
     margin-top:8vh;
     padding:0 1vw 1vw 1vw;
-    height:100%;
+    height:auto;
 }
 .placeholder{
     width:40%;

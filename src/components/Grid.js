@@ -4,6 +4,7 @@ import dijkstra from "../algorithms/dijkstra";
 import astar from "../algorithms/astar";
 import "./Grid.css";
 import ResponsiveDrawer from "./ResponsiveDrawer";
+import kruskal from "../mazeGen/kruskall";
 
 const rows = 41;
 const columns = 55;
@@ -38,6 +39,7 @@ class TGrid extends React.Component {
         rows}px`;
     });
   }
+  //<td key={i.toString() + "-" + j.toString()}>
   render() {
     if (this.state.grid.length === 0) return <div>Loading...</div>;
     let nodes = [];
@@ -45,20 +47,18 @@ class TGrid extends React.Component {
       let nodeRow = [];
       for (let j = 0; j < columns; j++)
         nodeRow.push(
-          <td key={i.toString() + "-" + j.toString()}>
-            <Node
-              row={this.state.grid[i][j].row}
-              column={this.state.grid[i][j].col}
-              isStart={this.state.grid[i][j].isStart}
-              isEnd={this.state.grid[i][j].isEnd}
-              isVisited={this.state.grid[i][j].isVisited}
-              isWall={this.state.grid[i][j].isWall}
-              isShortestPath={this.state.grid[i][j].isShortestPath}
-              onMouseClick={this.onMouseClick}
-              onMouseEnterAndLeave={this.onMouseEnterAndLeave}
-              ref={this.nodeRefs[i][j]}
-            />
-          </td>
+          <Node
+            row={this.state.grid[i][j].row}
+            column={this.state.grid[i][j].col}
+            isStart={this.state.grid[i][j].isStart}
+            isEnd={this.state.grid[i][j].isEnd}
+            isVisited={this.state.grid[i][j].isVisited}
+            isWall={this.state.grid[i][j].isWall}
+            isShortestPath={this.state.grid[i][j].isShortestPath}
+            onMouseClick={this.onMouseClick}
+            onMouseEnterAndLeave={this.onMouseEnterAndLeave}
+            ref={this.nodeRefs[i][j]}
+          />
         );
       nodes.push(<tr key={i}>{nodeRow}</tr>);
     }
@@ -69,6 +69,7 @@ class TGrid extends React.Component {
           visualize={this.visualize}
           isAnimating={isAnimating}
           clearGrid={this.clearGrid}
+          setKruskalMaze={this.setKruskalMaze}
         />
         <div className="content">
           <div className="grid-container">
@@ -313,6 +314,13 @@ class TGrid extends React.Component {
     shortestPath.forEach(node =>
       this.nodeRefs[node.row][node.col].current.classList.add("shortest-path")
     );
+  };
+
+  setKruskalMaze = async () => {
+    await this.clearGrid();
+    let grid = this.state.grid;
+    kruskal(grid, rows, columns);
+    this.setGrid(grid);
   };
 }
 

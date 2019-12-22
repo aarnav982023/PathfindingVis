@@ -15,14 +15,14 @@ class Node extends React.PureComponent {
       ? "wall"
       : "";
     return (
-      <div
+      <td
         id={`node-${row}-${column}`}
         className={`node ${statusClass}`}
         onClick={() => onMouseClick(row, column)}
         onMouseEnter={() => onMouseEnterAndLeave(row, column)}
         onMouseLeave={() => onMouseEnterAndLeave(row, column)}
         ref={this.props.forwardRef}
-      ></div>
+      ></td>
     );
   }
 }
