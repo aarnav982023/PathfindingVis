@@ -41,7 +41,8 @@ const useStyles = makeStyles(theme => ({
   appBar: {
     [theme.breakpoints.up("sm")]: {
       width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth
+      marginLeft: drawerWidth,
+      height: "7vh"
     },
     border: 0,
     backgroundColor: theme.palette.background.default,
@@ -97,6 +98,8 @@ function ResponsiveDrawer(props) {
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const [heuristic, setHeuristic] = React.useState({ 1: "manhatten" });
   const [allowDiag, setAllowDiag] = React.useState(false);
+  const [animateMaze, setAnimateMaze] = React.useState(true);
+  const [selectedMaze, setSelectedMaze] = React.useState(0);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -106,6 +109,9 @@ function ResponsiveDrawer(props) {
   };
   const handleHeuristicChange = event => {
     setHeuristic({ [selectedIndex]: event.target.value });
+  };
+  const handleMazeItemClick = (event, index) => {
+    setSelectedMaze(index);
   };
 
   const drawer = (
@@ -125,9 +131,21 @@ function ResponsiveDrawer(props) {
               label="Allow Diagonals"
             />
           </ListItem>
+          <ListItem>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={animateMaze}
+                  onChange={() => setAnimateMaze(!animateMaze)}
+                  value="animateMaze"
+                />
+              }
+              label="Animate Maze"
+            />
+          </ListItem>
           <Divider />
           <Typography variant="h5" className={classes.test}>
-            Algorithms
+            Pathfinding Algorithms
           </Typography>
           <ListItem
             button
@@ -174,6 +192,19 @@ function ResponsiveDrawer(props) {
                 </RadioGroup>
               </CardContent>
             </Collapse>
+          </ListItem>
+          <Divider />
+          <Typography variant="h5" className={classes.test}>
+            Maze Algorithms
+          </Typography>
+          <ListItem
+            button
+            selected={selectedMaze === 0}
+            onClick={event => {
+              handleMazeItemClick(event, 0);
+            }}
+          >
+            Kruskal
           </ListItem>
         </List>
       </div>
@@ -224,11 +255,11 @@ function ResponsiveDrawer(props) {
             variant="contained"
             disableElevation
             onClick={() => {
-              props.setKruskalMaze();
+              props.visualizeMaze(selectedMaze, animateMaze);
             }}
             disabled={props.isAnimating}
           >
-            Kruskal Maze
+            Generate Maze
           </Button>
         </Toolbar>
       </AppBar>

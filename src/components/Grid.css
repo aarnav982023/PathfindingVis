@@ -39,7 +39,6 @@
     background-color:dodgerblue;
 }
 .shortest-path-anim{
-    animation: onshortpath 0.2s;
     background-color:dodgerblue;
     background-image: linear-gradient(yellow,yellow);
     transition:background-size 0.5s ease;
@@ -60,14 +59,6 @@
 .start-node {
     background-image:linear-gradient(green,green) !important;
     border: 0.1px solid green !important;
-}
-@keyframes onshortpath{
-    0%{
-        background-size:0% 0%;
-    }
-    100%{
-        background-size:100% 100%;
-    }
 }
 @keyframes onvisit{
     0%{

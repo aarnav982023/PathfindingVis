@@ -6,8 +6,9 @@ import "./Grid.css";
 import ResponsiveDrawer from "./ResponsiveDrawer";
 import kruskal from "../mazeGen/kruskall";
 
-const rows = 41;
-const columns = 55;
+//41 55
+const rows = 55;
+const columns = 71;
 let startNode = { row: 20, column: 11 };
 let endNode = { row: 20, column: 43 };
 let selectStart = false;
@@ -39,7 +40,6 @@ class TGrid extends React.Component {
         rows}px`;
     });
   }
-  //<td key={i.toString() + "-" + j.toString()}>
   render() {
     if (this.state.grid.length === 0) return <div>Loading...</div>;
     let nodes = [];
@@ -48,6 +48,7 @@ class TGrid extends React.Component {
       for (let j = 0; j < columns; j++)
         nodeRow.push(
           <Node
+            key={i.toString() + "-" + j.toString()}
             row={this.state.grid[i][j].row}
             column={this.state.grid[i][j].col}
             isStart={this.state.grid[i][j].isStart}
@@ -69,7 +70,7 @@ class TGrid extends React.Component {
           visualize={this.visualize}
           isAnimating={isAnimating}
           clearGrid={this.clearGrid}
-          setKruskalMaze={this.setKruskalMaze}
+          visualizeMaze={this.visualizeMaze}
         />
         <div className="content">
           <div className="grid-container">
@@ -242,6 +243,14 @@ class TGrid extends React.Component {
       allowDiag
     );
     const { visitedNodes, shortestPath } = response;
+    visitedNodes.shift();
+    shortestPath.shift();
+    shortestPath.pop();
+    if (visitedNodes.length === 0) {
+      this.setAnimatingFalse();
+      this.setGrid(grid);
+      return;
+    }
     this.animate(visitedNodes, shortestPath, grid);
   };
   getResponseFromAlgo = (grid, sn, en, algoId, heuristic, allowDiag) => {
@@ -255,43 +264,36 @@ class TGrid extends React.Component {
     }
   };
   animate = (visitedNodes, shortestPath, grid) => {
-    visitedNodes.shift();
-    shortestPath.shift();
-    shortestPath.pop();
-    if (visitedNodes.length === 0) {
-      this.setAnimatingFalse();
-      this.setGrid(grid);
-      return;
-    }
-    for (let i = 0; i < visitedNodes.length; i++) {
+    let i = 0,
+      j = 0;
+    const animateVisitedNodes = () => {
+      if (i === visitedNodes.length) {
+        if (shortestPath.length) requestAnimationFrame(animateShortestPath);
+        else {
+          isAnimated = true;
+          isAnimating = false;
+          this.setGrid(grid);
+        }
+        return;
+      }
       const { row, col } = visitedNodes[i];
-      setTimeout(() => {
-        this.nodeRefs[row][col].current.classList.add("visited-anim");
-        if (i === visitedNodes.length - 1) {
-          if (shortestPath.length) this.animateShortestPath(shortestPath, grid);
-          else {
-            this.setAnimatingFalse();
-            this.setGrid(grid);
-          }
-        }
-      }, 10 * i);
-    }
-    isAnimated = true;
-  };
-  animateShortestPath = (shortestPath, grid) => {
-    for (let i = 0; i < shortestPath.length; i++) {
-      const { row, col } = shortestPath[i];
-      setTimeout(() => {
-        this.nodeRefs[row][col].current.classList.add("shortest-path-anim");
-        if (i === shortestPath.length - 1) {
-          this.setAnimatingFalse();
-          setTimeout(() => this.setGrid(grid), 5 * i);
-        }
-      }, 20 * i);
-    }
-  };
-  setAnimatingFalse = () => {
-    isAnimating = false;
+      this.nodeRefs[row][col].current.classList.add("visited-anim");
+      ++i;
+      requestAnimationFrame(animateVisitedNodes);
+    };
+    const animateShortestPath = () => {
+      if (j === shortestPath.length) {
+        isAnimated = true;
+        isAnimating = false;
+        this.setGrid(grid);
+        return;
+      }
+      const { row, col } = shortestPath[j];
+      this.nodeRefs[row][col].current.classList.add("shortest-path-anim");
+      ++j;
+      requestAnimationFrame(animateShortestPath);
+    };
+    requestAnimationFrame(animateVisitedNodes);
   };
 
   visualizeRealTime = (sn, en) => {
@@ -316,11 +318,67 @@ class TGrid extends React.Component {
     );
   };
 
-  setKruskalMaze = async () => {
+  visualizeMaze = async (mazeId, animateMaze) => {
     await this.clearGrid();
     let grid = this.state.grid;
-    kruskal(grid, rows, columns);
-    this.setGrid(grid);
+    if (!animateMaze) {
+      this.getResponseFromMaze(grid, mazeId);
+      await this.setGrid(grid);
+    } else {
+      isAnimating = true;
+      await this.setGrid(grid);
+      const { addedWalls, removedWalls } = this.getResponseFromMaze(
+        grid,
+        mazeId
+      );
+      this.animateMaze(addedWalls, removedWalls, grid);
+    }
+  };
+
+  getResponseFromMaze = (grid, mazeId) => {
+    switch (mazeId) {
+      case 0:
+        return kruskal(grid, rows, columns);
+      default:
+        break;
+    }
+  };
+
+  animateMaze = (addedWalls, removedWalls, grid) => {
+    let i = 0,
+      j = 0;
+    const animateAddedWalls = () => {
+      if (i === addedWalls.length) {
+        if (removedWalls.length) requestAnimationFrame(animateRemovedWalls);
+        else {
+          isAnimating = false;
+          this.setGrid(grid);
+        }
+        return;
+      }
+      const { row, col } = addedWalls[i];
+      this.nodeRefs[row][col].current.classList.add("wall");
+      ++i;
+      requestAnimationFrame(animateAddedWalls);
+    };
+    const animateRemovedWalls = () => {
+      if (j === removedWalls.length) {
+        isAnimating = false;
+        this.setGrid(grid);
+        return;
+      }
+      const { row, col } = removedWalls[j];
+      this.nodeRefs[row][col].current.classList.remove("wall");
+      ++j;
+      requestAnimationFrame(animateRemovedWalls);
+    };
+    const showAddedWalls = () => {
+      addedWalls.forEach(node =>
+        this.nodeRefs[node.row][node.col].current.classList.add("wall")
+      );
+    };
+    showAddedWalls();
+    requestAnimationFrame(animateRemovedWalls);
   };
 }
 
