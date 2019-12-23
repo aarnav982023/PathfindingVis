@@ -206,6 +206,15 @@ function ResponsiveDrawer(props) {
           >
             Kruskal
           </ListItem>
+          <ListItem
+            button
+            selected={selectedMaze === 1}
+            onClick={event => {
+              handleMazeItemClick(event, 1);
+            }}
+          >
+            Prim
+          </ListItem>
         </List>
       </div>
     </ThemeProvider>

@@ -5,6 +5,7 @@ import astar from "../algorithms/astar";
 import "./Grid.css";
 import ResponsiveDrawer from "./ResponsiveDrawer";
 import kruskal from "../mazeGen/kruskall";
+import prim from "../mazeGen/Prim";
 
 //41 55
 const rows = 55;
@@ -339,15 +340,16 @@ class TGrid extends React.Component {
     switch (mazeId) {
       case 0:
         return kruskal(grid, rows, columns);
+      case 1:
+        return prim(grid, rows, columns);
       default:
         break;
     }
   };
 
   animateMaze = (addedWalls, removedWalls, grid) => {
-    let i = 0,
-      j = 0;
-    const animateAddedWalls = () => {
+    //let i = 0;
+    /*const animateAddedWalls = () => {
       if (i === addedWalls.length) {
         if (removedWalls.length) requestAnimationFrame(animateRemovedWalls);
         else {
@@ -360,7 +362,8 @@ class TGrid extends React.Component {
       this.nodeRefs[row][col].current.classList.add("wall");
       ++i;
       requestAnimationFrame(animateAddedWalls);
-    };
+    };*/
+    let j = 0;
     const animateRemovedWalls = () => {
       if (j === removedWalls.length) {
         isAnimating = false;
