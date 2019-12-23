@@ -6,6 +6,7 @@ const astar = (grid, startNode, endNode, heuristic, allowDiag) => {
   let shortestPath = [];
   let pq = new PriorityQueue({
     comparator: function(a, b) {
+      //Tie-breaker
       if (a.f === b.f) return a.h - b.h;
       return a.f - b.f;
     }

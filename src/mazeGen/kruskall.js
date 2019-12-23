@@ -8,12 +8,12 @@ const kruskal = (grid, rows, columns) => {
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < columns; j++) {
       if (i % 2 === 0 || j % 2 === 0) {
-        grid[i][j].isWall = true;
-        addedWalls.push(grid[i][j]);
         if (i !== 0 && j !== 0 && i !== rows - 1 && j !== columns - 1) {
           edges.push(grid[i][j]);
         }
       } else set.add(grid[i][j]);
+      grid[i][j].isWall = true;
+      addedWalls.push(grid[i][j]);
     }
   }
   shuffle(edges);
@@ -24,7 +24,11 @@ const kruskal = (grid, rows, columns) => {
     ) {
       set.union(grid[edge.row][edge.col - 1], grid[edge.row][edge.col + 1]);
       grid[edge.row][edge.col].isWall = false;
+      grid[edge.row][edge.col - 1].isWall = false;
+      grid[edge.row][edge.col + 1].isWall = false;
+      removedWalls.push(grid[edge.row][edge.col - 1]);
       removedWalls.push(grid[edge.row][edge.col]);
+      removedWalls.push(grid[edge.row][edge.col + 1]);
     }
     if (
       edge.col % 2 !== 0 &&
@@ -32,7 +36,11 @@ const kruskal = (grid, rows, columns) => {
     ) {
       set.union(grid[edge.row - 1][edge.col], grid[edge.row + 1][edge.col]);
       grid[edge.row][edge.col].isWall = false;
+      grid[edge.row - 1][edge.col].isWall = false;
+      grid[edge.row + 1][edge.col].isWall = false;
+      removedWalls.push(grid[edge.row - 1][edge.col]);
       removedWalls.push(grid[edge.row][edge.col]);
+      removedWalls.push(grid[edge.row + 1][edge.col]);
     }
   });
   return { addedWalls, removedWalls };
