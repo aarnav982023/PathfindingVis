@@ -6,9 +6,15 @@ import "./Grid.css";
 import ResponsiveDrawer from "./ResponsiveDrawer";
 import kruskal from "../mazeGen/kruskall";
 import prim from "../mazeGen/Prim";
+import Card from "@material-ui/core/Card";
+import {
+  createMuiTheme,
+  ThemeProvider,
+  withStyles
+} from "@material-ui/core/styles";
 
 //41 55
-const rows = 55;
+const rows = 53;
 const columns = 71;
 let startNode = { row: 20, column: 11 };
 let endNode = { row: 20, column: 43 };
@@ -20,6 +26,34 @@ let isAnimated = false;
 let rtAlgoId = 0;
 let rtHeuristic = "";
 let rtAllowDiag = false;
+
+const myTheme = createMuiTheme({
+  palette: {
+    type: "dark"
+  },
+  overrides: {
+    MuiListItem: {
+      root: {
+        fontSize: "1rem"
+      }
+    }
+  }
+});
+
+const GridContainer = withStyles({
+  root: {
+    width: "100%",
+    padding: "1vw",
+    marginRight: "1vw"
+  }
+})(Card);
+
+const Placeholder = withStyles({
+  root: {
+    width: "100%",
+    height: "100%"
+  }
+})(Card);
 
 class TGrid extends React.Component {
   constructor(props) {
@@ -66,22 +100,26 @@ class TGrid extends React.Component {
     }
     this.setRowColumnStyle();
     return (
-      <div className="app">
-        <ResponsiveDrawer
-          visualize={this.visualize}
-          isAnimating={isAnimating}
-          clearGrid={this.clearGrid}
-          visualizeMaze={this.visualizeMaze}
-        />
-        <div className="content">
-          <div className="grid-container">
-            <table className="grid" ref={this.gridRef}>
-              <tbody>{nodes}</tbody>
-            </table>
+      <ThemeProvider theme={myTheme}>
+        <div className="app">
+          <ResponsiveDrawer
+            visualize={this.visualize}
+            isAnimating={isAnimating}
+            clearGrid={this.clearGrid}
+            visualizeMaze={this.visualizeMaze}
+          />
+          <div className="content">
+            <GridContainer>
+              <table className="grid" ref={this.gridRef}>
+                <tbody>{nodes}</tbody>
+              </table>
+            </GridContainer>
+            <div className="placeholder">
+              <Placeholder />
+            </div>
           </div>
-          <div className="placeholder"></div>
         </div>
-      </div>
+      </ThemeProvider>
     );
   }
   setGrid = async (grid = this.getInitGrid()) => {
@@ -248,7 +286,7 @@ class TGrid extends React.Component {
     shortestPath.shift();
     shortestPath.pop();
     if (visitedNodes.length === 0) {
-      this.setAnimatingFalse();
+      isAnimating = false;
       this.setGrid(grid);
       return;
     }

@@ -18,15 +18,11 @@ import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
-import {
-  makeStyles,
-  useTheme,
-  createMuiTheme,
-  ThemeProvider
-} from "@material-ui/core/styles";
+import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
+import { makeStyles, useTheme, createMuiTheme } from "@material-ui/core/styles";
 import { Divider } from "@material-ui/core";
 
-const drawerWidth = 300;
+const drawerWidth = 275;
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -45,8 +41,8 @@ const useStyles = makeStyles(theme => ({
       height: "7vh"
     },
     border: 0,
-    backgroundColor: theme.palette.background.default,
-    color: "black",
+    backgroundColor: myTheme.palette.background.default,
+    //color: "black",
     boxShadow: "none"
   },
   menuButton: {
@@ -60,8 +56,8 @@ const useStyles = makeStyles(theme => ({
     marginRight: "1vw"
   },
   drawerPaper: {
-    width: drawerWidth
-    //border: 0
+    width: drawerWidth,
+    border: 0
   },
   content: {
     flexGrow: 1,
@@ -81,6 +77,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const myTheme = createMuiTheme({
+  palette: {
+    type: "dark"
+  },
   overrides: {
     MuiListItem: {
       root: {
@@ -115,109 +114,104 @@ function ResponsiveDrawer(props) {
   };
 
   const drawer = (
-    <ThemeProvider theme={myTheme}>
-      <div>
-        <div className={classes.toolbar} />
-        <List>
-          <ListItem>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={allowDiag}
-                  onChange={() => setAllowDiag(!allowDiag)}
-                  value="allowDiagonals"
+    <div>
+      <div className={classes.toolbar} />
+      <List>
+        <ListItem>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={allowDiag}
+                onChange={() => setAllowDiag(!allowDiag)}
+                value="allowDiagonals"
+              />
+            }
+            label="Allow Diagonals"
+          />
+        </ListItem>
+        <ListItem>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={animateMaze}
+                onChange={() => setAnimateMaze(!animateMaze)}
+                value="animateMaze"
+              />
+            }
+            label="Animate Maze"
+          />
+        </ListItem>
+        <Divider />
+        <Typography variant="h6" className={classes.test}>
+          Pathfinding Algorithms
+        </Typography>
+        <ListItem
+          button
+          selected={selectedIndex === 0}
+          onClick={event => {
+            handleListItemClick(event, 0);
+          }}
+        >
+          Dijkstra
+        </ListItem>
+        <ListItem
+          button
+          selected={selectedIndex === 1}
+          onClick={event => {
+            handleListItemClick(event, 1);
+          }}
+        >
+          A*
+          <Collapse in={selectedIndex === 1} timeout="auto" unmountOnExit>
+            <CardContent>
+              <FormLabel>Heuristic</FormLabel>
+              <RadioGroup value={heuristic[1]} onChange={handleHeuristicChange}>
+                <FormControlLabel
+                  size="small"
+                  value="euclidean"
+                  control={<Radio />}
+                  label="Euclidean"
                 />
-              }
-              label="Allow Diagonals"
-            />
-          </ListItem>
-          <ListItem>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={animateMaze}
-                  onChange={() => setAnimateMaze(!animateMaze)}
-                  value="animateMaze"
+                <FormControlLabel
+                  size="small"
+                  value="manhatten"
+                  control={<Radio />}
+                  label="Manhatten"
                 />
-              }
-              label="Animate Maze"
-            />
-          </ListItem>
-          <Divider />
-          <Typography variant="h5" className={classes.test}>
-            Pathfinding Algorithms
-          </Typography>
-          <ListItem
-            button
-            selected={selectedIndex === 0}
-            onClick={event => {
-              handleListItemClick(event, 0);
-            }}
-          >
-            Dijkstra
-          </ListItem>
-          <ListItem
-            button
-            selected={selectedIndex === 1}
-            onClick={event => {
-              handleListItemClick(event, 1);
-            }}
-          >
-            A*
-            <Collapse in={selectedIndex === 1} timeout="auto" unmountOnExit>
-              <CardContent>
-                <FormLabel>Heuristic</FormLabel>
-                <RadioGroup
-                  value={heuristic[1]}
-                  onChange={handleHeuristicChange}
-                >
-                  <FormControlLabel
-                    size="small"
-                    value="euclidean"
-                    control={<Radio />}
-                    label="Euclidean"
-                  />
-                  <FormControlLabel
-                    size="small"
-                    value="manhatten"
-                    control={<Radio />}
-                    label="Manhatten"
-                  />
-                  <FormControlLabel
-                    size="small"
-                    value="diagonal"
-                    control={<Radio />}
-                    label="Diagonal"
-                  />
-                </RadioGroup>
-              </CardContent>
-            </Collapse>
-          </ListItem>
-          <Divider />
-          <Typography variant="h5" className={classes.test}>
-            Maze Algorithms
-          </Typography>
-          <ListItem
-            button
-            selected={selectedMaze === 0}
-            onClick={event => {
-              handleMazeItemClick(event, 0);
-            }}
-          >
-            Kruskal
-          </ListItem>
-          <ListItem
-            button
-            selected={selectedMaze === 1}
-            onClick={event => {
-              handleMazeItemClick(event, 1);
-            }}
-          >
-            Prim
-          </ListItem>
-        </List>
-      </div>
-    </ThemeProvider>
+                <FormControlLabel
+                  size="small"
+                  value="diagonal"
+                  control={<Radio />}
+                  label="Diagonal"
+                />
+              </RadioGroup>
+            </CardContent>
+          </Collapse>
+        </ListItem>
+        <Divider />
+        <Typography variant="h6" className={classes.test}>
+          Maze Algorithms
+        </Typography>
+        <ListItem
+          button
+          selected={selectedMaze === 0}
+          onClick={event => {
+            handleMazeItemClick(event, 0);
+          }}
+        >
+          Kruskal
+        </ListItem>
+        <ListItem
+          button
+          selected={selectedMaze === 1}
+          onClick={event => {
+            handleMazeItemClick(event, 1);
+          }}
+        >
+          Prim
+        </ListItem>
+      </List>
+    </div>
   );
 
   return (
@@ -236,7 +230,7 @@ function ResponsiveDrawer(props) {
           </IconButton>
           <Button
             className={classes.toolButton}
-            variant="contained"
+            variant="text"
             disableElevation
             onClick={() =>
               props.visualize(
@@ -251,7 +245,7 @@ function ResponsiveDrawer(props) {
           </Button>
           <Button
             className={classes.toolButton}
-            variant="contained"
+            variant="text"
             disableElevation
             onClick={() => {
               props.clearGrid();
@@ -261,21 +255,21 @@ function ResponsiveDrawer(props) {
             Clear
           </Button>
           <Button
-            variant="contained"
+            variant="text"
             disableElevation
             onClick={() => {
               props.visualizeMaze(selectedMaze, animateMaze);
             }}
             disabled={props.isAnimating}
           >
-            Generate Maze
+            Maze
           </Button>
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer}>
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Hidden smUp implementation="css">
-          <Drawer
+          <SwipeableDrawer
             container={container}
             variant="temporary"
             anchor={theme.direction === "rtl" ? "right" : "left"}
@@ -289,7 +283,7 @@ function ResponsiveDrawer(props) {
             }}
           >
             {drawer}
-          </Drawer>
+          </SwipeableDrawer>
         </Hidden>
         <Hidden xsDown implementation="css">
           <Drawer
