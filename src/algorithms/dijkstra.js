@@ -26,8 +26,8 @@ const dijkstra = (grid, startNode, endNode, allowDiag) => {
     //if (node.distance === Infinity) break;
     const n = [
       [1, 0],
-      [-1, 0],
       [0, 1],
+      [-1, 0],
       [0, -1]
     ];
     //with diag

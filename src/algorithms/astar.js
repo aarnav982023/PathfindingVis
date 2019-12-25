@@ -1,9 +1,10 @@
 import PriorityQueue from "js-priority-queue";
 
-const diagDist = 1.4;
 const astar = (grid, startNode, endNode, heuristic, allowDiag) => {
   let visitedNodes = [];
   let shortestPath = [];
+  let diagDist = 1.414;
+  if (heuristic === "chebyshev") diagDist = 1;
   let pq = new PriorityQueue({
     comparator: function(a, b) {
       //Tie-breaker
@@ -29,7 +30,6 @@ const astar = (grid, startNode, endNode, heuristic, allowDiag) => {
   while (pq.length) {
     const node = pq.dequeue();
     const { row, col } = node;
-    if (grid[row][col].isVisited) continue;
     grid[row][col].isVisited = true;
     visitedNodes.push(node);
     if (node.row === endNode.row && node.col === endNode.column) {
@@ -38,8 +38,8 @@ const astar = (grid, startNode, endNode, heuristic, allowDiag) => {
     }
     const n = [
       [1, 0],
-      [-1, 0],
       [0, 1],
+      [-1, 0],
       [0, -1]
     ];
     //with diag
@@ -63,7 +63,7 @@ const astar = (grid, startNode, endNode, heuristic, allowDiag) => {
         const dist =
           Math.abs(i[0]) === 1 && Math.abs(i[1]) === 1 ? diagDist : 1;
         let gNew = grid[row][col].g + dist;
-        let hNew = calculateHeuristic(r, c, endNode, heuristic);
+        let hNew = calculateHeuristic(r, c, endNode, heuristic, diagDist);
         let fNew = gNew + hNew;
         if (grid[r][c].f > fNew) {
           grid[r][c].g = gNew;
@@ -78,7 +78,7 @@ const astar = (grid, startNode, endNode, heuristic, allowDiag) => {
   return { visitedNodes, shortestPath };
 };
 
-const calculateHeuristic = (row, col, endNode, heuristic) => {
+const calculateHeuristic = (row, col, endNode, heuristic, diagDist) => {
   const dx = Math.abs(row - endNode.row);
   const dy = Math.abs(col - endNode.column);
   const d = 1;
@@ -89,7 +89,7 @@ const calculateHeuristic = (row, col, endNode, heuristic) => {
   if (heuristic === "euclidean") {
     ans = d * Math.sqrt(dx * dx + dy * dy);
   }
-  if (heuristic === "diagonal") {
+  if (heuristic === "octile" || heuristic === "chebyshev") {
     let d2 = diagDist;
     ans = d * Math.max(dx, dy) + (d2 - d) * Math.min(dx, dy);
   }

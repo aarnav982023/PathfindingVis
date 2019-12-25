@@ -40,13 +40,13 @@
     background-image: linear-gradient(yellow,yellow);
     background-position:50% 50%;
 }
+.wall{
+     background-image : linear-gradient(black,black) !important;
+     border:0.1px solid black ;
+}
 .shortest-path{
     background-image: linear-gradient(yellow,yellow);
     background-color:dodgerblue;
-}
-.wall{
-     background-image : linear-gradient(black,black) !important;
-     border:0.1px solid black !important;
 }
 .end-node{
     background-image:linear-gradient(red,red) !important; 

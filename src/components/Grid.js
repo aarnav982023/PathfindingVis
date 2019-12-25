@@ -2,6 +2,7 @@ import React from "react";
 import Node from "./Node";
 import dijkstra from "../algorithms/dijkstra";
 import astar from "../algorithms/astar";
+import jumpPointSearch from "../algorithms/jumpPointSearch";
 import "./Grid.css";
 import ResponsiveDrawer from "./ResponsiveDrawer";
 import kruskal from "../mazeGen/kruskall";
@@ -281,6 +282,7 @@ class TGrid extends React.Component {
       heuristic,
       allowDiag
     );
+    console.log(response);
     const { visitedNodes, shortestPath } = response;
     visitedNodes.shift();
     shortestPath.shift();
@@ -298,6 +300,8 @@ class TGrid extends React.Component {
         return dijkstra(grid, sn, en, allowDiag);
       case 1:
         return astar(grid, sn, en, heuristic, allowDiag);
+      case 2:
+        return jumpPointSearch(grid, startNode, endNode);
       default:
         break;
     }

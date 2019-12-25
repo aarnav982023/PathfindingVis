@@ -180,13 +180,28 @@ function ResponsiveDrawer(props) {
                 />
                 <FormControlLabel
                   size="small"
-                  value="diagonal"
+                  value="chebyshev"
                   control={<Radio />}
-                  label="Diagonal"
+                  label="Chebyshev"
+                />
+                <FormControlLabel
+                  size="small"
+                  value="octile"
+                  control={<Radio />}
+                  label="Octile"
                 />
               </RadioGroup>
             </CardContent>
           </Collapse>
+        </ListItem>
+        <ListItem
+          button
+          selected={selectedIndex === 2}
+          onClick={event => {
+            handleListItemClick(event, 2);
+          }}
+        >
+          Jump Point Search
         </ListItem>
         <Divider />
         <Typography variant="h6" className={classes.test}>
