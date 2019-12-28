@@ -23,8 +23,8 @@ const jumpPointSearch = (grid, startNode, endNode) => {
     startNode.column,
     endNode
   );
-  grid[startNode.row][startNode.column].isWall = false;
-  grid[endNode.row][endNode.column].isWall = false;
+  //grid[startNode.row][startNode.column].isWall = false;
+  //grid[endNode.row][endNode.column].isWall = false;
   const n = [
     [1, 0],
     [0, 1],
@@ -77,11 +77,12 @@ const scan = (node, dir, grid, endNode, pq) => {
       if (g.f <= nf) return false;
       g.g = ng;
       g.f = nf;
-      if (g.isWall) return false;
-      grid[r1][c1].prevNode = grid[r0][c0];
       if (g.row === endNode.row && g.col === endNode.column) {
+        grid[r1][c1].prevNode = grid[r0][c0];
         return "found";
       }
+      if (g.isWall) return false;
+      grid[r1][c1].prevNode = grid[r0][c0];
       let c2 = c1 + y;
       let r2 = r1 + x;
       //let jump = false;
@@ -130,11 +131,12 @@ const scan = (node, dir, grid, endNode, pq) => {
       if (g.f <= nf) return false;
       g.g = ng;
       g.f = nf;
-      if (g.isWall) return false;
-      grid[r0][c1].prevNode = grid[r0][c0];
       if (g.row === endNode.row && g.col === endNode.column) {
+        grid[r0][c1].prevNode = grid[r0][c0];
         return "found";
       }
+      if (g.isWall) return false;
+      grid[r0][c1].prevNode = grid[r0][c0];
       let c2 = c1 + y;
       //let jump = false;
       if (
@@ -175,11 +177,12 @@ const scan = (node, dir, grid, endNode, pq) => {
       if (g.f <= nf) return false;
       g.g = ng;
       g.f = nf;
-      if (g.isWall) return false;
-      grid[r1][c0].prevNode = grid[r0][c0];
       if (g.row === endNode.row && g.col === endNode.column) {
+        grid[r1][c0].prevNode = grid[r0][c0];
         return "found";
       }
+      if (g.isWall) return false;
+      grid[r1][c0].prevNode = grid[r0][c0];
       let r2 = r1 + x;
       //let jump = false;
       if (

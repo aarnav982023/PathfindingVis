@@ -287,7 +287,7 @@ class TGrid extends React.Component {
     visitedNodes.shift();
     shortestPath.shift();
     shortestPath.pop();
-    if (visitedNodes.length === 0) {
+    if (visitedNodes.length === 0 && shortestPath.length === 0) {
       isAnimating = false;
       this.setGrid(grid);
       return;
@@ -301,7 +301,7 @@ class TGrid extends React.Component {
       case 1:
         return astar(grid, sn, en, heuristic, allowDiag);
       case 2:
-        return jumpPointSearch(grid, startNode, endNode);
+        return jumpPointSearch(grid, sn, en);
       default:
         break;
     }
