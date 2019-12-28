@@ -23,6 +23,8 @@ const jumpPointSearch = (grid, startNode, endNode) => {
     startNode.column,
     endNode
   );
+  grid[startNode.row][startNode.column].isWall = false;
+  grid[endNode.row][endNode.column].isWall = false;
   const n = [
     [1, 0],
     [0, 1],
@@ -36,6 +38,7 @@ const jumpPointSearch = (grid, startNode, endNode) => {
 
   n.forEach(d => {
     pq.queue({ node: grid[startNode.row][startNode.column], dir: d });
+    //grid[startNode.row][startNode.column].prevNode[d[0]][d[1]] = null;
   });
   while (pq.length) {
     const obj = pq.dequeue();
@@ -43,19 +46,13 @@ const jumpPointSearch = (grid, startNode, endNode) => {
       obj.node.isVisited = true;
       visitedNodes.push(obj.node);
     }
-    console.log(
-      obj.node.row +
-        "," +
-        obj.node.col +
-        "-dir:" +
-        obj.dir[0] +
-        "," +
-        obj.dir[1] +
-        "-f:" +
-        obj.node.f
-    );
+    /*console.log(
+      obj.node.row + "," + obj.node.col + "-dir:" + obj.dir + "-f:" + obj.node.f
+    );*/
     const response = scan(obj.node, obj.dir, grid, endNode, pq);
-    if (response === "found") break;
+    if (response === "found") {
+      break;
+    }
   }
   shortestPath = getShortestPath(grid[endNode.row][endNode.column]);
   return { visitedNodes, shortestPath };
@@ -65,7 +62,7 @@ const jumpPointSearch = (grid, startNode, endNode) => {
 const scan = (node, dir, grid, endNode, pq) => {
   const x = dir[0];
   const y = dir[1];
-  if (Math.abs(x) === 1 && Math.abs(y) === 1) {
+  if (x !== 0 && y !== 0) {
     let r0 = node.row;
     let c0 = node.col;
     while (true) {
@@ -75,14 +72,19 @@ const scan = (node, dir, grid, endNode, pq) => {
       let r1 = r0 + x;
       if (!inGrid(r1, c1, grid)) return false;
       let g = grid[r1][c1];
-      grid[r1][c1].g = grid[r0][c0].g + 1;
-      grid[r1][c1].f = grid[r1][c1].g + H(r1, c1, endNode);
-      grid[r1][c1].prevNode = grid[r0][c0];
-      if (g.row === endNode.row && g.col === endNode.column) return "found";
+      let ng = grid[r0][c0].g + 1;
+      let nf = ng + H(r1, c1, endNode);
+      if (g.f <= nf) return false;
+      g.g = ng;
+      g.f = nf;
       if (g.isWall) return false;
+      grid[r1][c1].prevNode = grid[r0][c0];
+      if (g.row === endNode.row && g.col === endNode.column) {
+        return "found";
+      }
       let c2 = c1 + y;
       let r2 = r1 + x;
-      let jump = false;
+      //let jump = false;
       if (
         inGrid(r1, c0, grid) &&
         grid[r1][c0].isWall &&
@@ -90,7 +92,7 @@ const scan = (node, dir, grid, endNode, pq) => {
         !grid[r2][c0].isWall
       ) {
         pq.queue({ node: grid[r1][c1], dir: [x, -y] });
-        jump = true;
+        //jump = true;
       }
       if (
         inGrid(r0, c1, grid) &&
@@ -99,19 +101,18 @@ const scan = (node, dir, grid, endNode, pq) => {
         !grid[r0][c2].isWall
       ) {
         pq.queue({ node: grid[r1][c1], dir: [-x, y] });
-        jump = true;
+        //jump = true;
       }
       let hor = scan(grid[r1][c1], [0, y], grid, endNode, pq);
       let ver = scan(grid[r1][c1], [x, 0], grid, endNode, pq);
       if (hor === "found" || ver === "found") return "found";
       if (hor || ver) {
+        //jump = true;
+      }
+      /*if (jump) {
         pq.queue({ node: grid[r1][c1], dir: [x, y] });
         return true;
-      }
-      if (jump) {
-        pq.queue({ node: grid[r1][c1], dir: [x, y] });
-        return true;
-      }
+      }*/
       c0 = c1;
       r0 = r1;
     }
@@ -124,13 +125,18 @@ const scan = (node, dir, grid, endNode, pq) => {
       let c1 = c0 + y;
       if (!inGrid(r0, c1, grid)) return false;
       let g = grid[r0][c1];
-      grid[r0][c1].g = grid[r0][c0].g + 1;
-      grid[r0][c1].f = grid[r0][c1].g + H(r0, c1, endNode);
-      grid[r0][c1].prevNode = grid[r0][c0];
-      if (g.row === endNode.row && g.col === endNode.column) return "found";
+      let ng = grid[r0][c0].g + 1;
+      let nf = ng + H(r0, c1, endNode);
+      if (g.f <= nf) return false;
+      g.g = ng;
+      g.f = nf;
       if (g.isWall) return false;
+      grid[r0][c1].prevNode = grid[r0][c0];
+      if (g.row === endNode.row && g.col === endNode.column) {
+        return "found";
+      }
       let c2 = c1 + y;
-      let jump = false;
+      //let jump = false;
       if (
         inGrid(r0 - 1, c1, grid) &&
         grid[r0 - 1][c1].isWall &&
@@ -138,7 +144,7 @@ const scan = (node, dir, grid, endNode, pq) => {
         !grid[r0 - 1][c2].isWall
       ) {
         pq.queue({ node: grid[r0][c1], dir: [-1, y] });
-        jump = true;
+        //jump = true;
       }
       if (
         inGrid(r0 + 1, c1, grid) &&
@@ -147,12 +153,12 @@ const scan = (node, dir, grid, endNode, pq) => {
         !grid[r0 + 1][c2].isWall
       ) {
         pq.queue({ node: grid[r0][c1], dir: [1, y] });
-        jump = true;
+        //jump = true;
       }
-      if (jump) {
+      /*if (jump) {
         pq.queue({ node: grid[r0][c1], dir: [0, y] });
         return true;
-      }
+      }*/
       c0 = c1;
     }
   } else if (y === 0) {
@@ -164,13 +170,18 @@ const scan = (node, dir, grid, endNode, pq) => {
       let r1 = r0 + x;
       if (!inGrid(r1, c0, grid)) return false;
       let g = grid[r1][c0];
-      grid[r1][c0].g = grid[r0][c0].g + 1;
-      grid[r1][c0].f = grid[r1][c0].g + H(r1, c0, endNode);
-      grid[r1][c0].prevNode = grid[r0][c0];
-      if (g.row === endNode.row && g.col === endNode.column) return "found";
+      let ng = grid[r0][c0].g + 1;
+      let nf = ng + H(r1, c0, endNode);
+      if (g.f <= nf) return false;
+      g.g = ng;
+      g.f = nf;
       if (g.isWall) return false;
+      grid[r1][c0].prevNode = grid[r0][c0];
+      if (g.row === endNode.row && g.col === endNode.column) {
+        return "found";
+      }
       let r2 = r1 + x;
-      let jump = false;
+      //let jump = false;
       if (
         inGrid(r1, c0 - 1, grid) &&
         grid[r1][c0 - 1].isWall &&
@@ -178,7 +189,7 @@ const scan = (node, dir, grid, endNode, pq) => {
         !grid[r2][c0 - 1].isWall
       ) {
         pq.queue({ node: grid[r1][c0], dir: [x, -1] });
-        jump = true;
+        //jump = true;
       }
       if (
         inGrid(r1, c0 + 1, grid) &&
@@ -187,12 +198,12 @@ const scan = (node, dir, grid, endNode, pq) => {
         !grid[r2][c0 + 1].isWall
       ) {
         pq.queue({ node: grid[r1][c0], dir: [x, 1] });
-        jump = true;
+        //jump = true;
       }
-      if (jump) {
-        pq.queue({ node: grid[r1][c0], dir: [x, 0] });
+      /*if (jump) {
+        pq.queue({ node: grid[r1][c0], dir: [x, y] });
         return true;
-      }
+      }*/
       r0 = r1;
     }
   }

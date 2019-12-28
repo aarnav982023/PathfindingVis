@@ -288,6 +288,9 @@ function ResponsiveDrawer(props) {
             container={container}
             variant="temporary"
             anchor={theme.direction === "rtl" ? "right" : "left"}
+            onOpen={() => {
+              setMobileOpen(true);
+            }}
             open={mobileOpen}
             onClose={handleDrawerToggle}
             classes={{

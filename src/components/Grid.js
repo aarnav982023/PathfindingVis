@@ -274,7 +274,7 @@ class TGrid extends React.Component {
     let grid = this.state.grid;
     await this.setGrid(grid);
     this.clearVisited(grid);
-    const response = this.getResponseFromAlgo(
+    const response = await this.getResponseFromAlgo(
       grid,
       startNode,
       endNode,
