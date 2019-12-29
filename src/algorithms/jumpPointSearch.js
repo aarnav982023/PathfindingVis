@@ -85,35 +85,35 @@ const scan = (node, dir, grid, endNode, pq) => {
       grid[r1][c1].prevNode = grid[r0][c0];
       let c2 = c1 + y;
       let r2 = r1 + x;
-      //let jump = false;
+      let jump = false;
       if (
         inGrid(r1, c0, grid) &&
         grid[r1][c0].isWall &&
         inGrid(r2, c0, grid) &&
-        !grid[r2][c0].isWall
+        (!grid[r2][c0].isWall || (r2 === endNode.row && c0 === endNode.column))
       ) {
         pq.queue({ node: grid[r1][c1], dir: [x, -y] });
-        //jump = true;
+        jump = true;
       }
       if (
         inGrid(r0, c1, grid) &&
         grid[r0][c1].isWall &&
         inGrid(r0, c2, grid) &&
-        !grid[r0][c2].isWall
+        (!grid[r0][c2].isWall || (r0 === endNode.row && c2 === endNode.column))
       ) {
         pq.queue({ node: grid[r1][c1], dir: [-x, y] });
-        //jump = true;
+        jump = true;
       }
       let hor = scan(grid[r1][c1], [0, y], grid, endNode, pq);
       let ver = scan(grid[r1][c1], [x, 0], grid, endNode, pq);
       if (hor === "found" || ver === "found") return "found";
       if (hor || ver) {
-        //jump = true;
+        jump = true;
       }
-      /*if (jump) {
+      if (jump) {
         pq.queue({ node: grid[r1][c1], dir: [x, y] });
         return true;
-      }*/
+      }
       c0 = c1;
       r0 = r1;
     }
@@ -138,29 +138,31 @@ const scan = (node, dir, grid, endNode, pq) => {
       if (g.isWall) return false;
       grid[r0][c1].prevNode = grid[r0][c0];
       let c2 = c1 + y;
-      //let jump = false;
+      let jump = false;
       if (
         inGrid(r0 - 1, c1, grid) &&
         grid[r0 - 1][c1].isWall &&
         inGrid(r0 - 1, c2, grid) &&
-        !grid[r0 - 1][c2].isWall
+        (!grid[r0 - 1][c2].isWall ||
+          (r0 - 1 === endNode.row && c2 === endNode.column))
       ) {
         pq.queue({ node: grid[r0][c1], dir: [-1, y] });
-        //jump = true;
+        jump = true;
       }
       if (
         inGrid(r0 + 1, c1, grid) &&
         grid[r0 + 1][c1].isWall &&
         inGrid(r0 + 1, c2, grid) &&
-        !grid[r0 + 1][c2].isWall
+        (!grid[r0 + 1][c2].isWall ||
+          (r0 + 1 === endNode.row && c2 === endNode.column))
       ) {
         pq.queue({ node: grid[r0][c1], dir: [1, y] });
-        //jump = true;
+        jump = true;
       }
-      /*if (jump) {
+      if (jump) {
         pq.queue({ node: grid[r0][c1], dir: [0, y] });
         return true;
-      }*/
+      }
       c0 = c1;
     }
   } else if (y === 0) {
@@ -184,29 +186,31 @@ const scan = (node, dir, grid, endNode, pq) => {
       if (g.isWall) return false;
       grid[r1][c0].prevNode = grid[r0][c0];
       let r2 = r1 + x;
-      //let jump = false;
+      let jump = false;
       if (
         inGrid(r1, c0 - 1, grid) &&
         grid[r1][c0 - 1].isWall &&
         inGrid(r2, c0 - 1, grid) &&
-        !grid[r2][c0 - 1].isWall
+        (!grid[r2][c0 - 1].isWall ||
+          (r2 === endNode.row && c0 - 1 === endNode.column))
       ) {
         pq.queue({ node: grid[r1][c0], dir: [x, -1] });
-        //jump = true;
+        jump = true;
       }
       if (
         inGrid(r1, c0 + 1, grid) &&
         grid[r1][c0 + 1].isWall &&
         inGrid(r2, c0 + 1, grid) &&
-        !grid[r2][c0 + 1].isWall
+        (!grid[r2][c0 + 1].isWall ||
+          (r2 === endNode.row && c0 + 1 === endNode.column))
       ) {
         pq.queue({ node: grid[r1][c0], dir: [x, 1] });
-        //jump = true;
+        jump = true;
       }
-      /*if (jump) {
+      if (jump) {
         pq.queue({ node: grid[r1][c0], dir: [x, y] });
         return true;
-      }*/
+      }
       r0 = r1;
     }
   }
