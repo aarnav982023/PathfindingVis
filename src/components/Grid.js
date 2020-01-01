@@ -4,7 +4,7 @@ import dijkstra from "../algorithms/dijkstra";
 import astar from "../algorithms/astar";
 import jumpPointSearch from "../algorithms/jumpPointSearch";
 import "./Grid.css";
-import ResponsiveDrawer from "./ResponsiveDrawer";
+import NavBar from "./NavBar";
 import kruskal from "../mazeGen/kruskall";
 import prim from "../mazeGen/Prim";
 import Card from "@material-ui/core/Card";
@@ -103,7 +103,7 @@ class TGrid extends React.Component {
     return (
       <ThemeProvider theme={myTheme}>
         <div className="app">
-          <ResponsiveDrawer
+          <NavBar
             visualize={this.visualize}
             isAnimating={isAnimating}
             clearGrid={this.clearGrid}

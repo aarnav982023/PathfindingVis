@@ -89,12 +89,12 @@ const myTheme = createMuiTheme({
   }
 });
 
-function ResponsiveDrawer(props) {
+function NavBar(props) {
   const { container } = props;
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const [selectedAlgo, setSelectedAlgo] = React.useState(1);
   const [heuristic, setHeuristic] = React.useState({ 1: "manhatten" });
   const [allowDiag, setAllowDiag] = React.useState(false);
   const [animateMaze, setAnimateMaze] = React.useState(true);
@@ -104,10 +104,10 @@ function ResponsiveDrawer(props) {
     setMobileOpen(!mobileOpen);
   };
   const handleListItemClick = (event, index) => {
-    setSelectedIndex(index);
+    setSelectedAlgo(index);
   };
   const handleHeuristicChange = event => {
-    setHeuristic({ [selectedIndex]: event.target.value });
+    setHeuristic({ [selectedAlgo]: event.target.value });
   };
   const handleMazeItemClick = (event, index) => {
     setSelectedMaze(index);
@@ -147,7 +147,7 @@ function ResponsiveDrawer(props) {
         </Typography>
         <ListItem
           button
-          selected={selectedIndex === 0}
+          selected={selectedAlgo === 0}
           onClick={event => {
             handleListItemClick(event, 0);
           }}
@@ -156,13 +156,13 @@ function ResponsiveDrawer(props) {
         </ListItem>
         <ListItem
           button
-          selected={selectedIndex === 1}
+          selected={selectedAlgo === 1}
           onClick={event => {
             handleListItemClick(event, 1);
           }}
         >
           A*
-          <Collapse in={selectedIndex === 1} timeout="auto" unmountOnExit>
+          <Collapse in={selectedAlgo === 1} timeout="auto" unmountOnExit>
             <CardContent>
               <FormLabel>Heuristic</FormLabel>
               <RadioGroup value={heuristic[1]} onChange={handleHeuristicChange}>
@@ -196,7 +196,7 @@ function ResponsiveDrawer(props) {
         </ListItem>
         <ListItem
           button
-          selected={selectedIndex === 2}
+          selected={selectedAlgo === 2}
           onClick={event => {
             handleListItemClick(event, 2);
           }}
@@ -248,11 +248,7 @@ function ResponsiveDrawer(props) {
             variant="text"
             disableElevation
             onClick={() =>
-              props.visualize(
-                selectedIndex,
-                heuristic[selectedIndex],
-                allowDiag
-              )
+              props.visualize(selectedAlgo, heuristic[selectedAlgo], allowDiag)
             }
             disabled={props.isAnimating}
           >
@@ -319,7 +315,7 @@ function ResponsiveDrawer(props) {
   );
 }
 
-ResponsiveDrawer.propTypes = {
+NavBar.propTypes = {
   /**
    * Injected by the documentation to work in an iframe.
    * You won't need it on your project.
@@ -329,4 +325,4 @@ ResponsiveDrawer.propTypes = {
   )
 };
 
-export default ResponsiveDrawer;
+export default NavBar;
