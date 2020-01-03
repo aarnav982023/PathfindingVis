@@ -37,7 +37,6 @@ class TGrid extends React.Component {
     };
     this.nodeRefs = this.getRefs();
     this.gridRef = React.createRef();
-    this.isAnimating = false;
   }
   async componentDidMount() {
     await this.setGrid();
@@ -125,7 +124,7 @@ class TGrid extends React.Component {
     document.documentElement.style.setProperty("--columns", columns);
   };
   onMouseClick = async (row, column) => {
-    if (this.isAnimating) return;
+    if (this.props.isAnimating) return;
     if (selectStart) {
       if (row !== endNode.row || column !== endNode.column) {
         selectStart = false;
@@ -228,7 +227,7 @@ class TGrid extends React.Component {
     this.setGrid();
   };
   visualize = async (algoId, heuristic = "", allowDiag) => {
-    this.isAnimating = true;
+    this.props.HandleAnimating(true);
     rtAlgoId = algoId;
     rtHeuristic = heuristic;
     rtAllowDiag = allowDiag;
@@ -249,7 +248,7 @@ class TGrid extends React.Component {
     shortestPath.shift();
     shortestPath.pop();
     if (visitedNodes.length === 0 && shortestPath.length === 0) {
-      this.isAnimating = false;
+      this.props.HandleAnimating(false);
       this.setGrid(grid);
       return;
     }
@@ -275,7 +274,7 @@ class TGrid extends React.Component {
         if (shortestPath.length) requestAnimationFrame(animateShortestPath);
         else {
           isAnimated = true;
-          this.isAnimating = false;
+          this.props.HandleAnimating(false);
           this.setGrid(grid);
         }
         return;
@@ -288,7 +287,7 @@ class TGrid extends React.Component {
     const animateShortestPath = () => {
       if (j === shortestPath.length) {
         isAnimated = true;
-        this.isAnimating = false;
+        this.props.HandleAnimating(false);
         this.setGrid(grid);
         return;
       }
@@ -329,7 +328,7 @@ class TGrid extends React.Component {
       this.getResponseFromMaze(grid, mazeId);
       await this.setGrid(grid);
     } else {
-      this.isAnimating = true;
+      this.props.HandleAnimating(true);
       await this.setGrid(grid);
       const { addedWalls, removedWalls } = this.getResponseFromMaze(
         grid,
@@ -356,7 +355,7 @@ class TGrid extends React.Component {
       if (i === addedWalls.length) {
         if (removedWalls.length) requestAnimationFrame(animateRemovedWalls);
         else {
-          isAnimating = false;
+          this.props.HandleAnimating(false);
           this.setGrid(grid);
         }
         return;
@@ -369,7 +368,7 @@ class TGrid extends React.Component {
     let j = 0;
     const animateRemovedWalls = () => {
       if (j === removedWalls.length) {
-        this.isAnimating = false;
+        this.props.HandleAnimating(false);
         this.setGrid(grid);
         return;
       }
