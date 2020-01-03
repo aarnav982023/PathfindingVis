@@ -3,16 +3,10 @@ import Node from "./Node";
 import dijkstra from "../algorithms/dijkstra";
 import astar from "../algorithms/astar";
 import jumpPointSearch from "../algorithms/jumpPointSearch";
-import "./Grid.css";
-import NavBar from "./NavBar";
 import kruskal from "../mazeGen/kruskall";
 import prim from "../mazeGen/Prim";
 import Card from "@material-ui/core/Card";
-import {
-  createMuiTheme,
-  ThemeProvider,
-  withStyles
-} from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 
 //41 55
 const rows = 53;
@@ -22,37 +16,16 @@ let endNode = { row: 20, column: 43 };
 let selectStart = false;
 let selectEnd = false;
 let selectWall = false;
-let isAnimating = false;
 let isAnimated = false;
 let rtAlgoId = 0;
 let rtHeuristic = "";
 let rtAllowDiag = false;
-
-const myTheme = createMuiTheme({
-  palette: {
-    type: "dark"
-  },
-  overrides: {
-    MuiListItem: {
-      root: {
-        fontSize: "1rem"
-      }
-    }
-  }
-});
 
 const GridContainer = withStyles({
   root: {
     width: "100%",
     padding: "1vw",
     marginRight: "1vw"
-  }
-})(Card);
-
-const Placeholder = withStyles({
-  root: {
-    width: "100%",
-    height: "100%"
   }
 })(Card);
 
@@ -64,6 +37,7 @@ class TGrid extends React.Component {
     };
     this.nodeRefs = this.getRefs();
     this.gridRef = React.createRef();
+    this.isAnimating = false;
   }
   async componentDidMount() {
     await this.setGrid();
@@ -78,6 +52,15 @@ class TGrid extends React.Component {
   }
   render() {
     if (this.state.grid.length === 0) return <div>Loading...</div>;
+    return (
+      <GridContainer>
+        <table className="grid" ref={this.gridRef}>
+          <tbody>{this.nodes()}</tbody>
+        </table>
+      </GridContainer>
+    );
+  }
+  nodes = () => {
     let nodes = [];
     for (let i = 0; i < rows; i++) {
       let nodeRow = [];
@@ -99,30 +82,8 @@ class TGrid extends React.Component {
         );
       nodes.push(<tr key={i}>{nodeRow}</tr>);
     }
-    this.setRowColumnStyle();
-    return (
-      <ThemeProvider theme={myTheme}>
-        <div className="app">
-          <NavBar
-            visualize={this.visualize}
-            isAnimating={isAnimating}
-            clearGrid={this.clearGrid}
-            visualizeMaze={this.visualizeMaze}
-          />
-          <div className="content">
-            <GridContainer>
-              <table className="grid" ref={this.gridRef}>
-                <tbody>{nodes}</tbody>
-              </table>
-            </GridContainer>
-            <div className="placeholder">
-              <Placeholder />
-            </div>
-          </div>
-        </div>
-      </ThemeProvider>
-    );
-  }
+    return nodes;
+  };
   setGrid = async (grid = this.getInitGrid()) => {
     if (selectEnd) {
       selectEnd = false;
@@ -164,7 +125,7 @@ class TGrid extends React.Component {
     document.documentElement.style.setProperty("--columns", columns);
   };
   onMouseClick = async (row, column) => {
-    if (isAnimating) return;
+    if (this.isAnimating) return;
     if (selectStart) {
       if (row !== endNode.row || column !== endNode.column) {
         selectStart = false;
@@ -267,7 +228,7 @@ class TGrid extends React.Component {
     this.setGrid();
   };
   visualize = async (algoId, heuristic = "", allowDiag) => {
-    isAnimating = true;
+    this.isAnimating = true;
     rtAlgoId = algoId;
     rtHeuristic = heuristic;
     rtAllowDiag = allowDiag;
@@ -288,7 +249,7 @@ class TGrid extends React.Component {
     shortestPath.shift();
     shortestPath.pop();
     if (visitedNodes.length === 0 && shortestPath.length === 0) {
-      isAnimating = false;
+      this.isAnimating = false;
       this.setGrid(grid);
       return;
     }
@@ -314,7 +275,7 @@ class TGrid extends React.Component {
         if (shortestPath.length) requestAnimationFrame(animateShortestPath);
         else {
           isAnimated = true;
-          isAnimating = false;
+          this.isAnimating = false;
           this.setGrid(grid);
         }
         return;
@@ -327,7 +288,7 @@ class TGrid extends React.Component {
     const animateShortestPath = () => {
       if (j === shortestPath.length) {
         isAnimated = true;
-        isAnimating = false;
+        this.isAnimating = false;
         this.setGrid(grid);
         return;
       }
@@ -368,7 +329,7 @@ class TGrid extends React.Component {
       this.getResponseFromMaze(grid, mazeId);
       await this.setGrid(grid);
     } else {
-      isAnimating = true;
+      this.isAnimating = true;
       await this.setGrid(grid);
       const { addedWalls, removedWalls } = this.getResponseFromMaze(
         grid,
@@ -408,7 +369,7 @@ class TGrid extends React.Component {
     let j = 0;
     const animateRemovedWalls = () => {
       if (j === removedWalls.length) {
-        isAnimating = false;
+        this.isAnimating = false;
         this.setGrid(grid);
         return;
       }
