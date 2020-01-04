@@ -7,6 +7,7 @@ import kruskal from "../mazeGen/kruskall";
 import prim from "../mazeGen/Prim";
 import Card from "@material-ui/core/Card";
 import { withStyles } from "@material-ui/core/styles";
+import { connect } from "react-redux";
 
 //41 55
 const rows = 53;
@@ -17,9 +18,6 @@ let selectStart = false;
 let selectEnd = false;
 let selectWall = false;
 let isAnimated = false;
-let rtAlgoId = 0;
-let rtHeuristic = "";
-let rtAllowDiag = false;
 
 const GridContainer = withStyles({
   root: {
@@ -226,22 +224,12 @@ class TGrid extends React.Component {
     isAnimated = false;
     this.setGrid();
   };
-  visualize = async (algoId, heuristic = "", allowDiag) => {
+  visualize = async () => {
     this.props.HandleAnimating(true);
-    rtAlgoId = algoId;
-    rtHeuristic = heuristic;
-    rtAllowDiag = allowDiag;
     let grid = this.state.grid;
     await this.setGrid(grid);
     this.clearVisited(grid);
-    const response = await this.getResponseFromAlgo(
-      grid,
-      startNode,
-      endNode,
-      algoId,
-      heuristic,
-      allowDiag
-    );
+    const response = await this.getResponseFromAlgo(grid, startNode, endNode);
     console.log(response);
     const { visitedNodes, shortestPath } = response;
     visitedNodes.shift();
@@ -254,12 +242,12 @@ class TGrid extends React.Component {
     }
     this.animate(visitedNodes, shortestPath, grid);
   };
-  getResponseFromAlgo = (grid, sn, en, algoId, heuristic, allowDiag) => {
-    switch (algoId) {
+  getResponseFromAlgo = (grid, sn, en) => {
+    switch (this.props.algo) {
       case 0:
-        return dijkstra(grid, sn, en, allowDiag);
+        return dijkstra(grid, sn, en, this.props.diag);
       case 1:
-        return astar(grid, sn, en, heuristic, allowDiag);
+        return astar(grid, sn, en, this.props.heuristic[1], this.props.diag);
       case 2:
         return jumpPointSearch(grid, sn, en);
       default:
@@ -305,10 +293,7 @@ class TGrid extends React.Component {
     const { visitedNodes, shortestPath } = this.getResponseFromAlgo(
       grid,
       sn,
-      en,
-      rtAlgoId,
-      rtHeuristic,
-      rtAllowDiag
+      en
     );
     visitedNodes.shift();
     shortestPath.shift();
@@ -321,25 +306,22 @@ class TGrid extends React.Component {
     );
   };
 
-  visualizeMaze = async (mazeId, animateMaze) => {
+  visualizeMaze = async () => {
     await this.clearGrid();
     let grid = this.state.grid;
-    if (!animateMaze) {
-      this.getResponseFromMaze(grid, mazeId);
+    if (!this.props.animMaze) {
+      this.getResponseFromMaze(grid, this.props.maze);
       await this.setGrid(grid);
     } else {
       this.props.HandleAnimating(true);
       await this.setGrid(grid);
-      const { addedWalls, removedWalls } = this.getResponseFromMaze(
-        grid,
-        mazeId
-      );
+      const { addedWalls, removedWalls } = this.getResponseFromMaze(grid);
       this.animateMaze(addedWalls, removedWalls, grid);
     }
   };
 
-  getResponseFromMaze = (grid, mazeId) => {
-    switch (mazeId) {
+  getResponseFromMaze = grid => {
+    switch (this.props.maze) {
       case 0:
         return kruskal(grid, rows, columns);
       case 1:
@@ -387,4 +369,10 @@ class TGrid extends React.Component {
   };
 }
 
-export default TGrid;
+const mapStateToProps = state => {
+  return state;
+};
+
+export default connect(mapStateToProps, null, null, { forwardRef: true })(
+  TGrid
+);

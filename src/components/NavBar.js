@@ -21,6 +21,14 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import { makeStyles, useTheme, createMuiTheme } from "@material-ui/core/styles";
 import { Divider } from "@material-ui/core";
+import { connect } from "react-redux";
+import {
+  selectAlgo,
+  allowDiag,
+  changeHeuristic,
+  selectMaze,
+  animateMaze
+} from "../actions";
 
 const drawerWidth = 275;
 
@@ -90,27 +98,34 @@ const myTheme = createMuiTheme({
 });
 
 function NavBar(props) {
-  const { container } = props;
+  const {
+    container,
+    algo,
+    selectAlgo,
+    diag,
+    allowDiag,
+    heuristic,
+    changeHeuristic,
+    maze,
+    selectMaze,
+    animMaze,
+    animateMaze
+  } = props;
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [selectedAlgo, setSelectedAlgo] = React.useState(1);
-  const [heuristic, setHeuristic] = React.useState({ 1: "manhatten" });
-  const [allowDiag, setAllowDiag] = React.useState(false);
-  const [animateMaze, setAnimateMaze] = React.useState(true);
-  const [selectedMaze, setSelectedMaze] = React.useState(0);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-  const handleListItemClick = (event, index) => {
-    setSelectedAlgo(index);
+  const handleAlgoClick = index => {
+    selectAlgo(index);
   };
   const handleHeuristicChange = event => {
-    setHeuristic({ [selectedAlgo]: event.target.value });
+    changeHeuristic({ [algo]: event.target.value });
   };
-  const handleMazeItemClick = (event, index) => {
-    setSelectedMaze(index);
+  const handleMazeItemClick = index => {
+    selectMaze(index);
   };
 
   const drawer = (
@@ -121,8 +136,8 @@ function NavBar(props) {
           <FormControlLabel
             control={
               <Switch
-                checked={allowDiag}
-                onChange={() => setAllowDiag(!allowDiag)}
+                checked={diag}
+                onChange={() => allowDiag(!diag)}
                 value="allowDiagonals"
               />
             }
@@ -133,8 +148,8 @@ function NavBar(props) {
           <FormControlLabel
             control={
               <Switch
-                checked={animateMaze}
-                onChange={() => setAnimateMaze(!animateMaze)}
+                checked={animMaze}
+                onChange={() => animateMaze(!animMaze)}
                 value="animateMaze"
               />
             }
@@ -147,22 +162,22 @@ function NavBar(props) {
         </Typography>
         <ListItem
           button
-          selected={selectedAlgo === 0}
+          selected={algo === 0}
           onClick={event => {
-            handleListItemClick(event, 0);
+            handleAlgoClick(0);
           }}
         >
           Dijkstra
         </ListItem>
         <ListItem
           button
-          selected={selectedAlgo === 1}
+          selected={algo === 1}
           onClick={event => {
-            handleListItemClick(event, 1);
+            handleAlgoClick(1);
           }}
         >
           A*
-          <Collapse in={selectedAlgo === 1} timeout="auto" unmountOnExit>
+          <Collapse in={algo === 1} timeout="auto" unmountOnExit>
             <CardContent>
               <FormLabel>Heuristic</FormLabel>
               <RadioGroup value={heuristic[1]} onChange={handleHeuristicChange}>
@@ -196,9 +211,9 @@ function NavBar(props) {
         </ListItem>
         <ListItem
           button
-          selected={selectedAlgo === 2}
+          selected={algo === 2}
           onClick={event => {
-            handleListItemClick(event, 2);
+            handleAlgoClick(2);
           }}
         >
           Jump Point Search
@@ -209,18 +224,18 @@ function NavBar(props) {
         </Typography>
         <ListItem
           button
-          selected={selectedMaze === 0}
+          selected={maze === 0}
           onClick={event => {
-            handleMazeItemClick(event, 0);
+            handleMazeItemClick(0);
           }}
         >
           Kruskal
         </ListItem>
         <ListItem
           button
-          selected={selectedMaze === 1}
+          selected={maze === 1}
           onClick={event => {
-            handleMazeItemClick(event, 1);
+            handleMazeItemClick(1);
           }}
         >
           Prim
@@ -247,9 +262,7 @@ function NavBar(props) {
             className={classes.toolButton}
             variant="text"
             disableElevation
-            onClick={() =>
-              props.visualize(selectedAlgo, heuristic[selectedAlgo], allowDiag)
-            }
+            onClick={() => props.visualize()}
             disabled={props.isAnimating}
           >
             Visualize
@@ -269,7 +282,7 @@ function NavBar(props) {
             variant="text"
             disableElevation
             onClick={() => {
-              props.visualizeMaze(selectedMaze, animateMaze);
+              props.visualizeMaze(animateMaze);
             }}
             disabled={props.isAnimating}
           >
@@ -325,4 +338,15 @@ NavBar.propTypes = {
   )
 };
 
-export default NavBar;
+const mapStateToProps = state => {
+  console.log(state);
+  return state;
+};
+
+export default connect(mapStateToProps, {
+  selectAlgo,
+  allowDiag,
+  changeHeuristic,
+  selectMaze,
+  animateMaze
+})(NavBar);

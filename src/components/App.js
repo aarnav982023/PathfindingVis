@@ -39,14 +39,14 @@ const App = () => {
     <ThemeProvider theme={myTheme}>
       <div className="app">
         <NavBar
-          visualize={(algoId, heuristic = "", allowDiag) => {
-            gridRef.current.visualize(algoId, heuristic, allowDiag);
+          visualize={() => {
+            gridRef.current.visualize();
           }}
           clearGrid={() => {
             gridRef.current.clearGrid();
           }}
-          visualizeMaze={(mazeId, animateMaze) => {
-            gridRef.current.visualizeMaze(mazeId, animateMaze);
+          visualizeMaze={animateMaze => {
+            gridRef.current.visualizeMaze();
           }}
           isAnimating={isAnimating}
         />
