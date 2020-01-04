@@ -26,10 +26,16 @@ const animMazeReducer = (animMaze = true, action) => {
   return animMaze;
 };
 
+const animatingReducer = (anim = false, action) => {
+  if (action.type === "SET_ANIMATING") return action.payload;
+  return anim;
+};
+
 export default combineReducers({
   algo: algoReducer,
   diag: diagReducer,
   heuristic: heuristicReducer,
   maze: mazeReducer,
-  animMaze: animMazeReducer
+  animMaze: animMazeReducer,
+  anim: animatingReducer
 });

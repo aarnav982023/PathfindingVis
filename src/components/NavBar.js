@@ -109,7 +109,8 @@ function NavBar(props) {
     maze,
     selectMaze,
     animMaze,
-    animateMaze
+    animateMaze,
+    anim
   } = props;
   const classes = useStyles();
   const theme = useTheme();
@@ -263,7 +264,7 @@ function NavBar(props) {
             variant="text"
             disableElevation
             onClick={() => props.visualize()}
-            disabled={props.isAnimating}
+            disabled={anim}
           >
             Visualize
           </Button>
@@ -274,7 +275,7 @@ function NavBar(props) {
             onClick={() => {
               props.clearGrid();
             }}
-            disabled={props.isAnimating}
+            disabled={anim}
           >
             Clear
           </Button>
@@ -284,7 +285,7 @@ function NavBar(props) {
             onClick={() => {
               props.visualizeMaze(animateMaze);
             }}
-            disabled={props.isAnimating}
+            disabled={anim}
           >
             Maze
           </Button>

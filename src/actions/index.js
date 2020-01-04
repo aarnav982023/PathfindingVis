@@ -32,3 +32,10 @@ export const animateMaze = animMaze => {
     payload: animMaze
   };
 };
+
+export const setAnimating = isAnim => {
+  return {
+    type: "SET_ANIMATING",
+    payload: isAnim
+  };
+};

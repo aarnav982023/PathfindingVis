@@ -31,10 +31,6 @@ const Placeholder = withStyles({
 
 const App = () => {
   const gridRef = React.useRef();
-  const [isAnimating, setIsAnimating] = React.useState(false);
-  const HandleAnimating = val => {
-    setIsAnimating(val);
-  };
   return (
     <ThemeProvider theme={myTheme}>
       <div className="app">
@@ -48,14 +44,9 @@ const App = () => {
           visualizeMaze={animateMaze => {
             gridRef.current.visualizeMaze();
           }}
-          isAnimating={isAnimating}
         />
         <div className="content">
-          <Grid
-            ref={gridRef}
-            isAnimating={isAnimating}
-            HandleAnimating={HandleAnimating}
-          />
+          <Grid ref={gridRef} />
           <div className="placeholder">
             <Placeholder />
           </div>

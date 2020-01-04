@@ -8,6 +8,7 @@ import prim from "../mazeGen/Prim";
 import Card from "@material-ui/core/Card";
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
+import { setAnimating } from "../actions";
 
 //41 55
 const rows = 53;
@@ -122,7 +123,7 @@ class TGrid extends React.Component {
     document.documentElement.style.setProperty("--columns", columns);
   };
   onMouseClick = async (row, column) => {
-    if (this.props.isAnimating) return;
+    if (this.props.anim) return;
     if (selectStart) {
       if (row !== endNode.row || column !== endNode.column) {
         selectStart = false;
@@ -225,7 +226,7 @@ class TGrid extends React.Component {
     this.setGrid();
   };
   visualize = async () => {
-    this.props.HandleAnimating(true);
+    this.props.setAnimating(true);
     let grid = this.state.grid;
     await this.setGrid(grid);
     this.clearVisited(grid);
@@ -236,7 +237,7 @@ class TGrid extends React.Component {
     shortestPath.shift();
     shortestPath.pop();
     if (visitedNodes.length === 0 && shortestPath.length === 0) {
-      this.props.HandleAnimating(false);
+      this.props.setAnimating(false);
       this.setGrid(grid);
       return;
     }
@@ -262,7 +263,7 @@ class TGrid extends React.Component {
         if (shortestPath.length) requestAnimationFrame(animateShortestPath);
         else {
           isAnimated = true;
-          this.props.HandleAnimating(false);
+          this.props.setAnimating(false);
           this.setGrid(grid);
         }
         return;
@@ -275,7 +276,7 @@ class TGrid extends React.Component {
     const animateShortestPath = () => {
       if (j === shortestPath.length) {
         isAnimated = true;
-        this.props.HandleAnimating(false);
+        this.props.setAnimating(false);
         this.setGrid(grid);
         return;
       }
@@ -313,7 +314,7 @@ class TGrid extends React.Component {
       this.getResponseFromMaze(grid, this.props.maze);
       await this.setGrid(grid);
     } else {
-      this.props.HandleAnimating(true);
+      this.props.setAnimating(true);
       await this.setGrid(grid);
       const { addedWalls, removedWalls } = this.getResponseFromMaze(grid);
       this.animateMaze(addedWalls, removedWalls, grid);
@@ -337,7 +338,7 @@ class TGrid extends React.Component {
       if (i === addedWalls.length) {
         if (removedWalls.length) requestAnimationFrame(animateRemovedWalls);
         else {
-          this.props.HandleAnimating(false);
+          this.props.setAnimating(false);
           this.setGrid(grid);
         }
         return;
@@ -350,7 +351,7 @@ class TGrid extends React.Component {
     let j = 0;
     const animateRemovedWalls = () => {
       if (j === removedWalls.length) {
-        this.props.HandleAnimating(false);
+        this.props.setAnimating(false);
         this.setGrid(grid);
         return;
       }
@@ -373,6 +374,6 @@ const mapStateToProps = state => {
   return state;
 };
 
-export default connect(mapStateToProps, null, null, { forwardRef: true })(
-  TGrid
-);
+export default connect(mapStateToProps, { setAnimating }, null, {
+  forwardRef: true
+})(TGrid);
