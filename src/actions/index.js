@@ -39,3 +39,17 @@ export const setAnimating = isAnim => {
     payload: isAnim
   };
 };
+
+export const setVisited = visited => {
+  return {
+    type: "SET_VISITED",
+    payload: visited
+  };
+};
+
+export const setShortest = shortest => {
+  return {
+    type: "SET_SHORTEST",
+    payload: shortest
+  };
+};

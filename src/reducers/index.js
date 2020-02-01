@@ -31,11 +31,31 @@ const animatingReducer = (anim = false, action) => {
   return anim;
 };
 
+const visitedReducer = (visited = 0, action) => {
+  switch (action.type) {
+    case "SET_VISITED":
+      return action.payload;
+    default:
+      return visited;
+  }
+};
+
+const shortestReducer = (shortest = 0, action) => {
+  switch (action.type) {
+    case "SET_SHORTEST":
+      return action.payload;
+    default:
+      return shortest;
+  }
+};
+
 export default combineReducers({
   algo: algoReducer,
   diag: diagReducer,
   heuristic: heuristicReducer,
   maze: mazeReducer,
   animMaze: animMazeReducer,
-  anim: animatingReducer
+  anim: animatingReducer,
+  visited: visitedReducer,
+  shortest: shortestReducer
 });

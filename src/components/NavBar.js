@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
@@ -19,7 +18,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
-import { makeStyles, useTheme, createMuiTheme } from "@material-ui/core/styles";
+import { makeStyles, createMuiTheme } from "@material-ui/core/styles";
 import { Divider } from "@material-ui/core";
 import { connect } from "react-redux";
 import {
@@ -37,13 +36,13 @@ const useStyles = makeStyles(theme => ({
     display: "flex"
   },
   drawer: {
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("md")]: {
       width: drawerWidth,
       flexShrink: 0
     }
   },
   appBar: {
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("md")]: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
       height: "7vh"
@@ -55,7 +54,7 @@ const useStyles = makeStyles(theme => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("md")]: {
       display: "none"
     }
   },
@@ -113,7 +112,6 @@ function NavBar(props) {
     anim
   } = props;
   const classes = useStyles();
-  const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -163,6 +161,7 @@ function NavBar(props) {
         </Typography>
         <ListItem
           button
+          disabled={anim}
           selected={algo === 0}
           onClick={event => {
             handleAlgoClick(0);
@@ -173,6 +172,7 @@ function NavBar(props) {
         <ListItem
           button
           selected={algo === 1}
+          disabled={anim}
           onClick={event => {
             handleAlgoClick(1);
           }}
@@ -213,6 +213,7 @@ function NavBar(props) {
         <ListItem
           button
           selected={algo === 2}
+          disabled={anim}
           onClick={event => {
             handleAlgoClick(2);
           }}
@@ -226,6 +227,7 @@ function NavBar(props) {
         <ListItem
           button
           selected={maze === 0}
+          disabled={anim}
           onClick={event => {
             handleMazeItemClick(0);
           }}
@@ -235,6 +237,7 @@ function NavBar(props) {
         <ListItem
           button
           selected={maze === 1}
+          disabled={anim}
           onClick={event => {
             handleMazeItemClick(1);
           }}
@@ -297,7 +300,6 @@ function NavBar(props) {
           <SwipeableDrawer
             container={container}
             variant="temporary"
-            anchor={theme.direction === "rtl" ? "right" : "left"}
             onOpen={() => {
               setMobileOpen(true);
             }}
@@ -313,7 +315,7 @@ function NavBar(props) {
             {drawer}
           </SwipeableDrawer>
         </Hidden>
-        <Hidden xsDown implementation="css">
+        <Hidden smDown implementation="css">
           <Drawer
             classes={{
               paper: classes.drawerPaper
@@ -329,18 +331,7 @@ function NavBar(props) {
   );
 }
 
-NavBar.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  container: PropTypes.instanceOf(
-    typeof Element === "undefined" ? Object : Element
-  )
-};
-
 const mapStateToProps = state => {
-  console.log(state);
   return state;
 };
 
