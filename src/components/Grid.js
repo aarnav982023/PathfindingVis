@@ -49,6 +49,7 @@ class TGrid extends React.Component {
   render() {
     if (isAnimated) {
       const response = this.visualizeRealTime(startNode, endNode);
+      console.log("in render");
       this.props.setVisited(response.visitedNodes.length);
       this.props.setShortest(response.shortestPath.length);
     }
@@ -128,11 +129,6 @@ class TGrid extends React.Component {
       if (row !== endNode.row || column !== endNode.column) {
         selectStart = false;
         this.changeGridStartNode(row, column);
-        if (isAnimated) {
-          const response = this.visualizeRealTime(startNode, endNode);
-          this.props.setVisited(response.visitedNodes.length);
-          this.props.setShortest(response.shortestPath.length);
-        }
       }
     } else if (
       row === startNode.row &&
@@ -144,11 +140,6 @@ class TGrid extends React.Component {
       if (row !== startNode.row || column !== startNode.column) {
         selectEnd = false;
         this.changeGridEndNode(row, column);
-        if (isAnimated) {
-          const response = this.visualizeRealTime(startNode, endNode);
-          this.props.setVisited(response.visitedNodes.length);
-          this.props.setShortest(response.shortestPath.length);
-        }
       }
     } else if (
       row === endNode.row &&
