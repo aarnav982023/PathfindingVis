@@ -1,7 +1,8 @@
 :root{
-    --rows : 32;
-    --columns : 75;
     box-sizing: border-box;
+    --visited:#EF6C00;
+    --transition:#FFCC80;
+    --shortest:white;
 }
 .grid-container{
     padding: 1vw;
@@ -26,14 +27,14 @@
 }
 .visited-anim{
     animation: onvisit 0.5s;
-    background-color:dodgerblue;
+    background-color:var(--visited);
 }
 .visited{
-    background-color:dodgerblue;
+    background-color:var(--visited);
 }
 .shortest-path-anim{
-    background-color:dodgerblue;
-    background-image: linear-gradient(yellow,yellow);
+    background-color:var(--visited);
+    background-image: linear-gradient(var(--shortest),var(--shortest));
     background-position:50% 50%;
 }
 .wall{
@@ -41,8 +42,8 @@
      border:0.1px solid black ;
 }
 .shortest-path{
-    background-image: linear-gradient(yellow,yellow);
-    background-color:dodgerblue;
+    background-image: linear-gradient(var(--shortest),var(--shortest));
+    background-color:var(--visited);
 }
 .end-node{
     background-image:linear-gradient(red,red) !important; 
@@ -54,10 +55,10 @@
 }
 @keyframes onvisit{
     0%{
-        background-color:yellow;
+        background-color:var(--transition);
     }
     100%{
-        background-color:dodgerblue;
+        background-color:var(--visited);
     }
 }
 .app{
@@ -69,18 +70,35 @@
     margin-top:8vh;
     padding:0 1vw 1vw 1vw;
 }
-.placeholder{
+.data{
     width:40%;
     height:auto;
+}
+
+.dataContent{
+    width:100%;
+    display:flex;
+    flex-direction: column;
+}
+
+.visitedCard{
+    --background-image:linear-gradient(to bottom right,var(--visited),var(--transition));
+}
+
+.shortestPathCard{
+    background-image:linear-gradient(to bottom right,var(--visited),var(--transition));
 }
 
 @media only screen and (max-width:1400px){
     .content{
         flex-direction: column;
     }
-    .placeholder{
+    .data{
         width:100%;
         height:200px;
         margin-top:2vh;
+    }
+    .dataContent{
+        flex-direction: row;
     }
 }

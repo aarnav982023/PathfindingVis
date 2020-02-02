@@ -18,7 +18,11 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
-import { makeStyles, createMuiTheme } from "@material-ui/core/styles";
+import {
+  makeStyles,
+  createMuiTheme,
+  withStyles
+} from "@material-ui/core/styles";
 import { Divider } from "@material-ui/core";
 import { connect } from "react-redux";
 import {
@@ -30,6 +34,30 @@ import {
 } from "../actions";
 
 const drawerWidth = 275;
+
+const OrangeSwitch = withStyles({
+  switchBase: {
+    color: "#FFCC80",
+    "&$checked": {
+      color: "#EF6C00"
+    },
+    "&$checked + $track": {
+      backgroundColor: "#E65100"
+    }
+  },
+  checked: {},
+  track: {}
+})(Switch);
+
+const OrangeRadio = withStyles({
+  root: {
+    color: "",
+    "&$checked": {
+      color: "#EF6C00"
+    }
+  },
+  checked: {}
+})(props => <Radio color="default" {...props} />);
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,7 +77,6 @@ const useStyles = makeStyles(theme => ({
     },
     border: 0,
     backgroundColor: myTheme.palette.background.default,
-    //color: "black",
     boxShadow: "none"
   },
   menuButton: {
@@ -58,11 +85,14 @@ const useStyles = makeStyles(theme => ({
       display: "none"
     }
   },
-  toolbar: theme.mixins.toolbar,
+  toolbar: {
+    padding: "1vh"
+  },
   toolButton: {
     marginRight: "1vw"
   },
   drawerPaper: {
+    //Color for actual drawer can be set here
     width: drawerWidth,
     border: 0
   },
@@ -129,12 +159,14 @@ function NavBar(props) {
 
   const drawer = (
     <div>
-      <div className={classes.toolbar} />
+      <div className={classes.toolbar}>
+        <Typography variant="h5">Pathfinding Visualizer</Typography>
+      </div>
       <List>
         <ListItem>
           <FormControlLabel
             control={
-              <Switch
+              <OrangeSwitch
                 checked={diag}
                 onChange={() => allowDiag(!diag)}
                 value="allowDiagonals"
@@ -146,7 +178,7 @@ function NavBar(props) {
         <ListItem>
           <FormControlLabel
             control={
-              <Switch
+              <OrangeSwitch
                 checked={animMaze}
                 onChange={() => animateMaze(!animMaze)}
                 value="animateMaze"
@@ -185,25 +217,25 @@ function NavBar(props) {
                 <FormControlLabel
                   size="small"
                   value="euclidean"
-                  control={<Radio />}
+                  control={<OrangeRadio />}
                   label="Euclidean"
                 />
                 <FormControlLabel
                   size="small"
                   value="manhatten"
-                  control={<Radio />}
+                  control={<OrangeRadio />}
                   label="Manhatten"
                 />
                 <FormControlLabel
                   size="small"
                   value="chebyshev"
-                  control={<Radio />}
+                  control={<OrangeRadio />}
                   label="Chebyshev"
                 />
                 <FormControlLabel
                   size="small"
                   value="octile"
-                  control={<Radio />}
+                  control={<OrangeRadio />}
                   label="Octile"
                 />
               </RadioGroup>

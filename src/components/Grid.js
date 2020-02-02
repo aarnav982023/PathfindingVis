@@ -49,7 +49,6 @@ class TGrid extends React.Component {
   render() {
     if (isAnimated) {
       const response = this.visualizeRealTime(startNode, endNode);
-      console.log("in render");
       this.props.setVisited(response.visitedNodes.length);
       this.props.setShortest(response.shortestPath.length);
     }
@@ -206,6 +205,8 @@ class TGrid extends React.Component {
     this.setGrid(grid);
   };
   clearVisited = grid => {
+    this.props.setVisited(0);
+    this.props.setShortest(0);
     grid.forEach(row =>
       row.forEach(node => {
         node.isShortestPath = false;
@@ -270,6 +271,8 @@ class TGrid extends React.Component {
     return response;
   };
   animate = async (visitedNodes, shortestPath, grid) => {
+    //await this.props.setVisited(visitedNodes.length);
+    //await this.props.setShortest(shortestPath.length);
     let i = 0,
       j = 0;
     const animateVisitedNodes = async () => {
@@ -277,9 +280,6 @@ class TGrid extends React.Component {
         if (shortestPath.length) requestAnimationFrame(animateShortestPath);
         else {
           isAnimated = true;
-          this.props.setAnimating(false);
-          this.props.setVisited(visitedNodes.length);
-          this.props.setShortest(shortestPath.length);
           this.setGrid(grid);
         }
         return;
@@ -287,13 +287,12 @@ class TGrid extends React.Component {
       const { row, col } = visitedNodes[i];
       this.nodeRefs[row][col].current.classList.add("visited-anim");
       ++i;
+      this.props.setVisited(i);
       requestAnimationFrame(animateVisitedNodes);
     };
     const animateShortestPath = () => {
       if (j === shortestPath.length) {
         isAnimated = true;
-        this.props.setVisited(visitedNodes.length);
-        this.props.setShortest(shortestPath.length);
         this.props.setAnimating(false);
         this.setGrid(grid);
         return;
@@ -301,6 +300,7 @@ class TGrid extends React.Component {
       const { row, col } = shortestPath[j];
       this.nodeRefs[row][col].current.classList.add("shortest-path-anim");
       ++j;
+      this.props.setShortest(j);
       requestAnimationFrame(animateShortestPath);
     };
     await requestAnimationFrame(animateVisitedNodes);
@@ -314,6 +314,8 @@ class TGrid extends React.Component {
       sn,
       en
     );
+    this.props.setVisited(visitedNodes.length);
+    this.props.setShortest(shortestPath.length);
     visitedNodes.shift();
     shortestPath.shift();
     shortestPath.pop();
@@ -390,7 +392,14 @@ class TGrid extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return state;
+  return {
+    algo: state.algo,
+    diag: state.diag,
+    heuristic: state.heuristic,
+    maze: state.maze,
+    animMaze: state.animMaze,
+    anim: state.anim
+  };
 };
 
 export default connect(

@@ -1,13 +1,10 @@
 import React from "react";
 import Grid from "./Grid";
 import NavBar from "./NavBar";
+import Visited from "./Visited";
+import ShortestPath from "./ShortestPath";
 import "../assets/css/App.css";
-import Card from "@material-ui/core/Card";
-import {
-  createMuiTheme,
-  ThemeProvider,
-  withStyles
-} from "@material-ui/core/styles";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
 const myTheme = createMuiTheme({
   palette: {
@@ -19,15 +16,11 @@ const myTheme = createMuiTheme({
         fontSize: "1rem"
       }
     }
+  },
+  typography: {
+    fontFamily: "'Karla', sans-serif"
   }
 });
-
-const Placeholder = withStyles({
-  root: {
-    width: "100%",
-    height: "100%"
-  }
-})(Card);
 
 const App = () => {
   const gridRef = React.useRef();
@@ -72,8 +65,11 @@ const App = () => {
         />
         <div className="content">
           <Grid ref={gridRef} rows={getRow()} columns={getColumn()} />
-          <div className="placeholder">
-            <Placeholder />
+          <div className="data">
+            <div className="dataContent">
+              <Visited />
+              <ShortestPath />
+            </div>
           </div>
         </div>
       </div>
