@@ -271,8 +271,6 @@ class TGrid extends React.Component {
     return response;
   };
   animate = async (visitedNodes, shortestPath, grid) => {
-    //await this.props.setVisited(visitedNodes.length);
-    //await this.props.setShortest(shortestPath.length);
     let i = 0,
       j = 0;
     const animateVisitedNodes = async () => {
@@ -280,6 +278,7 @@ class TGrid extends React.Component {
         if (shortestPath.length) requestAnimationFrame(animateShortestPath);
         else {
           isAnimated = true;
+          this.props.setAnimating(false);
           this.setGrid(grid);
         }
         return;

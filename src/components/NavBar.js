@@ -168,6 +168,7 @@ function NavBar(props) {
             control={
               <OrangeSwitch
                 checked={diag}
+                disabled={anim}
                 onChange={() => allowDiag(!diag)}
                 value="allowDiagonals"
               />
@@ -179,6 +180,7 @@ function NavBar(props) {
           <FormControlLabel
             control={
               <OrangeSwitch
+                disabled={anim}
                 checked={animMaze}
                 onChange={() => animateMaze(!animMaze)}
                 value="animateMaze"
