@@ -2,26 +2,34 @@ import React from "react";
 
 class Node extends React.PureComponent {
   render() {
-    const { row, column, onMouseClick, onMouseEnterAndLeave } = this.props;
+    const {
+      row,
+      column,
+      onMouseClick,
+      onMouseEnterAndLeave,
+      startNodeClass,
+      endNodeClass,
+      wallClass
+    } = this.props;
     const statusClass = this.props.isStart
-      ? "start-node"
+      ? startNodeClass
       : this.props.isEnd
-      ? "end-node"
+      ? endNodeClass
       : this.props.isShortestPath
       ? "shortest-path"
       : this.props.isVisited
       ? "visited"
       : this.props.isWall
-      ? "wall"
+      ? wallClass
       : "";
     return (
       <td
         id={`node-${row}-${column}`}
         className={`node ${statusClass}`}
+        ref={this.props.forwardRef}
         onClick={() => onMouseClick(row, column)}
         onMouseEnter={() => onMouseEnterAndLeave(row, column)}
         onMouseLeave={() => onMouseEnterAndLeave(row, column)}
-        ref={this.props.forwardRef}
       ></td>
     );
   }

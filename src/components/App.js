@@ -3,6 +3,7 @@ import Grid from "./Grid";
 import NavBar from "./NavBar";
 import Visited from "./Visited";
 import ShortestPath from "./ShortestPath";
+import AlgoInfo from "./AlgoInfo";
 import "../assets/css/App.css";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
@@ -70,6 +71,7 @@ const App = () => {
               <Visited />
               <ShortestPath />
             </div>
+            <AlgoInfo />
           </div>
         </div>
       </div>

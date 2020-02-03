@@ -15,7 +15,12 @@ let endNode = { row: 20, column: 27 };
 let selectStart = false;
 let selectEnd = false;
 let selectWall = false;
+let selectRemoveWall = false;
 let isAnimated = false;
+
+const startNodeClass = "start-node";
+const endNodeClass = "end-node";
+const wallClass = "wall";
 
 const GridContainer = withStyles({
   root: {
@@ -70,6 +75,9 @@ class TGrid extends React.Component {
         nodeRow.push(
           <Node
             key={i.toString() + "-" + j.toString()}
+            startNodeClass={startNodeClass}
+            endNodeClass={endNodeClass}
+            wallClass={wallClass}
             row={this.state.grid[i][j].row}
             column={this.state.grid[i][j].col}
             isStart={this.state.grid[i][j].isStart}
@@ -135,6 +143,8 @@ class TGrid extends React.Component {
       !selectEnd
     ) {
       selectStart = true;
+      if (this.state.grid[row][column].isWall)
+        this.nodeRefs[row][column].current.classList.add(wallClass);
     } else if (selectEnd) {
       if (row !== startNode.row || column !== startNode.column) {
         selectEnd = false;
@@ -146,27 +156,38 @@ class TGrid extends React.Component {
       !selectStart
     ) {
       selectEnd = true;
+      if (this.state.grid[row][column].isWall)
+        this.nodeRefs[row][column].current.classList.add(wallClass);
     } else if (selectWall) {
       selectWall = false;
+      await this.setGrid(this.state.grid);
+    } else if (this.state.grid[row][column].isWall) {
+      selectRemoveWall = true;
+      this.nodeRefs[row][column].current.classList.remove(wallClass);
+      let grid = this.state.grid;
+      grid[row][column].isWall = false;
       if (isAnimated) this.visualizeRealTime(startNode, endNode);
+    } else if (selectRemoveWall) {
+      selectRemoveWall = false;
       await this.setGrid(this.state.grid);
     } else {
       selectWall = true;
-      this.nodeRefs[row][column].current.classList.add("wall");
+      this.nodeRefs[row][column].current.classList.add(wallClass);
       let grid = this.state.grid;
       grid[row][column].isWall = true;
+      if (isAnimated) this.visualizeRealTime(startNode, endNode);
     }
   };
   onMouseEnterAndLeave = (row, column) => {
     //Just changing the class using refs.
     if (selectStart) {
       if (row !== endNode.row || column !== endNode.column) {
-        this.nodeRefs[row][column].current.classList.toggle("start-node");
+        this.nodeRefs[row][column].current.classList.toggle(startNodeClass);
         if (isAnimated) this.visualizeRealTime({ row, column }, endNode);
       }
     } else if (selectEnd) {
       if (row !== startNode.row || column !== startNode.column) {
-        this.nodeRefs[row][column].current.classList.toggle("end-node");
+        this.nodeRefs[row][column].current.classList.toggle(endNodeClass);
         if (isAnimated) this.visualizeRealTime(startNode, { row, column });
       }
     } else if (selectWall) {
@@ -174,9 +195,20 @@ class TGrid extends React.Component {
         (row !== endNode.row || column !== endNode.column) &&
         (row !== startNode.row || column !== startNode.column)
       ) {
-        this.nodeRefs[row][column].current.classList.add("wall");
+        this.nodeRefs[row][column].current.classList.add(wallClass);
         let grid = this.state.grid;
         grid[row][column].isWall = true;
+        if (isAnimated) this.visualizeRealTime(startNode, endNode);
+      }
+    } else if (selectRemoveWall) {
+      if (
+        (row !== endNode.row || column !== endNode.column) &&
+        (row !== startNode.row || column !== startNode.column)
+      ) {
+        this.nodeRefs[row][column].current.classList.remove(wallClass);
+        let grid = this.state.grid;
+        grid[row][column].isWall = false;
+        if (isAnimated) this.visualizeRealTime(startNode, endNode);
       }
     }
   };
@@ -194,14 +226,14 @@ class TGrid extends React.Component {
     grid[startNode.row][startNode.column].isStart = false;
     startNode = { row, column };
     grid[startNode.row][startNode.column].isStart = true;
-    this.nodeRefs[row][column].current.classList.add("start-node");
+    this.nodeRefs[row][column].current.classList.add(startNodeClass);
     this.setGrid(grid);
   };
   changeGridEndNode = (row, column, grid = this.state.grid) => {
     grid[endNode.row][endNode.column].isEnd = false;
     endNode = { row, column };
     grid[endNode.row][endNode.column].isEnd = true;
-    this.nodeRefs[row][column].current.classList.add("end-node");
+    this.nodeRefs[row][column].current.classList.add(endNodeClass);
     this.setGrid(grid);
   };
   clearVisited = grid => {
@@ -364,7 +396,7 @@ class TGrid extends React.Component {
         return;
       }
       const { row, col } = addedWalls[i];
-      this.nodeRefs[row][col].current.classList.add("wall");
+      this.nodeRefs[row][col].current.classList.add(wallClass);
       ++i;
       requestAnimationFrame(animateAddedWalls);
     };*/
@@ -376,13 +408,13 @@ class TGrid extends React.Component {
         return;
       }
       const { row, col } = removedWalls[j];
-      this.nodeRefs[row][col].current.classList.remove("wall");
+      this.nodeRefs[row][col].current.classList.remove(wallClass);
       ++j;
       requestAnimationFrame(animateRemovedWalls);
     };
     const showAddedWalls = () => {
       addedWalls.forEach(node =>
-        this.nodeRefs[node.row][node.col].current.classList.add("wall")
+        this.nodeRefs[node.row][node.col].current.classList.add(wallClass)
       );
     };
     showAddedWalls();
