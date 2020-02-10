@@ -59,8 +59,8 @@ class TGrid extends React.Component {
     }
     if (this.state.grid.length === 0) return <div>Loading...</div>;
     return (
-      <GridContainer>
-        <table className="grid" ref={this.gridRef}>
+      <GridContainer ref={this.gridRef}>
+        <table className="grid">
           <tbody>{this.nodes()}</tbody>
         </table>
       </GridContainer>
