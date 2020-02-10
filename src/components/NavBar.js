@@ -76,7 +76,7 @@ const useStyles = makeStyles(theme => ({
       height: "7vh"
     },
     border: 0,
-    backgroundColor: myTheme.palette.background.default,
+    backgroundColor: myTheme.palette.background.default, //background is Transparent
     boxShadow: "none"
   },
   menuButton: {
