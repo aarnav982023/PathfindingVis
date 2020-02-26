@@ -18,11 +18,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
-import {
-  makeStyles,
-  createMuiTheme,
-  withStyles
-} from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { Divider } from "@material-ui/core";
 import { connect } from "react-redux";
 import {
@@ -63,6 +59,13 @@ const useStyles = makeStyles(theme => ({
   root: {
     display: "flex"
   },
+  title: {
+    display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "block",
+      marginRight: theme.spacing(6)
+    }
+  },
   drawer: {
     [theme.breakpoints.up("md")]: {
       width: drawerWidth,
@@ -71,13 +74,12 @@ const useStyles = makeStyles(theme => ({
   },
   appBar: {
     [theme.breakpoints.up("md")]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-      height: "7vh"
+      height: "7vh",
+      zIndex: theme.zIndex.drawer + 1
     },
     border: 0,
-    backgroundColor: myTheme.palette.background.default, //background is Transparent
-    boxShadow: "none"
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: "0 0.5rem 1rem 0 #1a1f33"
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -85,9 +87,7 @@ const useStyles = makeStyles(theme => ({
       display: "none"
     }
   },
-  toolbar: {
-    padding: "1vh"
-  },
+  toolbar: theme.mixins.toolbar,
   toolButton: {
     marginRight: "1vw"
   },
@@ -112,19 +112,6 @@ const useStyles = makeStyles(theme => ({
     padding: "1vh 0 1vh 1vh"
   }
 }));
-
-const myTheme = createMuiTheme({
-  palette: {
-    type: "dark"
-  },
-  overrides: {
-    MuiListItem: {
-      root: {
-        fontSize: "1rem"
-      }
-    }
-  }
-});
 
 function NavBar(props) {
   const {
@@ -159,9 +146,6 @@ function NavBar(props) {
 
   const drawer = (
     <div>
-      <div className={classes.toolbar}>
-        <Typography variant="h5">Pathfinding Visualizer</Typography>
-      </div>
       <List>
         <ListItem>
           <FormControlLabel
@@ -191,7 +175,7 @@ function NavBar(props) {
         </ListItem>
         <Divider />
         <Typography variant="h6" className={classes.test}>
-          Pathfinding Algorithms
+          Algorithms
         </Typography>
         <ListItem
           button
@@ -256,7 +240,7 @@ function NavBar(props) {
         </ListItem>
         <Divider />
         <Typography variant="h6" className={classes.test}>
-          Maze Algorithms
+          Mazes
         </Typography>
         <ListItem
           button
@@ -296,6 +280,9 @@ function NavBar(props) {
           >
             <MenuIcon />
           </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            Pathfinding Visualizer
+          </Typography>
           <Button
             className={classes.toolButton}
             variant="text"
@@ -357,6 +344,7 @@ function NavBar(props) {
             variant="permanent"
             open
           >
+            <div className={classes.toolbar} />
             {drawer}
           </Drawer>
         </Hidden>

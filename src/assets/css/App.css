@@ -1,132 +1,135 @@
-:root{
-    box-sizing: border-box;
-    --visited:#EF6C00;
-    --transition:#FFCC80;
-    --shortest:white;
+:root {
+  box-sizing: border-box;
+  --visited: #ef6c00;
+  --transition: #ffcc80;
+  --shortest: white;
 }
-.grid-container{
-    padding: 1vw;
-    margin-right: 1vw;
-    border-radius : 1vw;
-    box-shadow: 0.1px 0.1px 5px black;
-    width:100%;
+.grid-container {
+  padding: 1vw;
+  margin-right: 1vw;
+  border-radius: 1vw;
+  box-shadow: 0.1px 0.1px 5px black;
+  width: 100%;
 }
-.grid { 
-    border-collapse: collapse;
-    width:100%;
-    height: 100%;
+.grid {
+  border-collapse: collapse;
+  width: 100%;
+  height: 100%;
 }
-.grid td{
-    border:0.1px solid rgba(7, 7, 7, 0.13);
-    width:1fr ;
-    height:1fr;
-    padding:0;
+.grid td {
+  border: 0.1px solid rgba(7, 7, 7, 0.13);
+  width: 1fr;
+  height: 1fr;
+  padding: 0;
 }
 
-.node{
-    padding:0;
+.node {
+  padding: 0;
 }
-.visited-anim{
-    animation: onvisit 0.5s;
-    background-color:var(--visited);
+.visited-anim {
+  animation: onvisit 0.5s;
+  background-color: var(--visited);
 }
-.visited{
-    background-color:var(--visited);
+.visited {
+  background-color: var(--visited);
 }
-.shortest-path-anim{
-    background-color:var(--visited);
-    background-image: linear-gradient(var(--shortest),var(--shortest));
-    background-position:50% 50%;
+.shortest-path-anim {
+  background-color: var(--visited);
+  background-image: linear-gradient(var(--shortest), var(--shortest));
+  background-position: 50% 50%;
 }
-.wall{
-     background-image : linear-gradient(black,black) !important;
-     border:0.1px solid black ;
+.wall {
+  background-image: linear-gradient(black, black) !important;
+  border: 0.1px solid black;
 }
-.shortest-path{
-    background-image: linear-gradient(var(--shortest),var(--shortest));
-    background-color:var(--visited);
+.shortest-path {
+  background-image: linear-gradient(var(--shortest), var(--shortest));
+  background-color: var(--visited);
 }
-.end-node{
-    background-image:linear-gradient(red,red) !important; 
-    border: 0.1px solid red !important;
+.end-node {
+  background-image: linear-gradient(red, red) !important;
+  border: 0.1px solid red !important;
 }
 .start-node {
-    background-image:linear-gradient(green,green) !important;
-    border: 0.1px solid green !important;
+  background-image: linear-gradient(green, green) !important;
+  border: 0.1px solid green !important;
 }
-@keyframes onvisit{
-    0%{
-        background-color:var(--transition);
-    }
-    100%{
-        background-color:var(--visited);
-    }
+@keyframes onvisit {
+  0% {
+    background-color: var(--transition);
+  }
+  100% {
+    background-color: var(--visited);
+  }
 }
-.app{
-    display:flex;
+.app {
+  display: flex;
 }
-.content{
-    display: flex;
-    width:100%;
-    margin-top:8vh;
-    padding:0 1vw 1vw 1vw;
+.content {
+  display: flex;
+  width: 100%;
+  margin-top: 8vh;
+  padding: 0 1vw 1vw 1vw;
 }
-.data{
-    width:40%;
-    height:auto;
+.data {
+  width: 40%;
+  height: auto;
 }
 
-.dataContent{
-    width:100%;
-    display:flex;
+.dataContent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.visitedCard {
+  --background-image: linear-gradient(
+    to bottom right,
+    var(--visited),
+    var(--transition)
+  );
+}
+
+.shortestPathCard {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--visited),
+    var(--transition)
+  );
+}
+
+@media only screen and (max-width: 1400px) {
+  .content {
     flex-direction: column;
+  }
+  .data {
+    width: 100%;
+    height: 200px;
+    margin-top: 2vh;
+  }
+  .dataContent {
+    flex-direction: row;
+  }
+}
+*::-webkit-scrollbar-track {
+  background-color: #192038;
 }
 
-.visitedCard{
-    --background-image:linear-gradient(to bottom right,var(--visited),var(--transition));
+*::-webkit-scrollbar {
+  width: 0.3125rem;
+  background-color: #101426;
+}
+*::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #101426;
+}
+div::-webkit-scrollbar-track {
+  background-color: #192038;
 }
 
-.shortestPathCard{
-    background-image:linear-gradient(to bottom right,var(--visited),var(--transition));
-}
-
-@media only screen and (max-width:1400px){
-    .content{
-        flex-direction: column;
-    }
-    .data{
-        width:100%;
-        height:200px;
-        margin-top:2vh;
-    }
-    .dataContent{
-        flex-direction: row;
-    }
-}
-*::-webkit-scrollbar-track
-{
-	background-color: #303030;
-}
-
-*::-webkit-scrollbar
-{
-	width: 5px;
-	background-color: #303030;
-}
-*::-webkit-scrollbar-thumb
-{
-	border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	background-color: #EF6C00;
-}
-div::-webkit-scrollbar-track
-{
-	background-color: #424242;
-}
-
-div::-webkit-scrollbar
-{
-	width: 5px;
-	background-color: #424242;
+div::-webkit-scrollbar {
+  width: 0.3125rem;
+  background-color: #101426;
 }

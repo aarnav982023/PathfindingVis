@@ -9,7 +9,17 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
 const myTheme = createMuiTheme({
   palette: {
-    type: "dark"
+    type: "dark",
+    background: {
+      default: "#151a30",
+      paper: "#222b45"
+    },
+    divider: "#151a30",
+    action: {
+      hover: "#598bff66",
+      selected: "#3366ff4D",
+      active: "#274bdb"
+    }
   },
   overrides: {
     MuiListItem: {
