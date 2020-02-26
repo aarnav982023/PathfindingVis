@@ -15,7 +15,7 @@ const ShortestPathCard = withStyles({
 const Shortest = props => {
   return (
     <ShortestPathCard className="shortestPathCard">
-      <Typography>Shortest Path</Typography>
+      <Typography variant="h6">Shortest Path</Typography>
       <Typography variant="h3">{props.shortest}</Typography>
     </ShortestPathCard>
   );

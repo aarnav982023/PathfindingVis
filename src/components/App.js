@@ -78,7 +78,7 @@ const App = () => {
           <Grid ref={gridRef} rows={getRow()} columns={getColumn()} />
           <div className="data">
             <div className="dataContent">
-              <Visited />
+              <Visited rows={getRow()} columns={getColumn()} />
               <ShortestPath />
             </div>
             <AlgoInfo />
