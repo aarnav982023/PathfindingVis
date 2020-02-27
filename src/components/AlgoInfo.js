@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import Card from "@material-ui/core/Card";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
+import { useTransition, animated } from "react-spring";
 
 const AlgoInfoCard = withStyles({
   root: {
@@ -46,13 +47,26 @@ const getContent = algo => {
 };
 
 const AlgoInfo = props => {
-  return (
-    <AlgoInfoCard>
-      <Typography variant="h4">{getTitle(props.algo)}</Typography>
-      <br />
-      <Typography variant="body1">{getContent(props.algo)}</Typography>
-    </AlgoInfoCard>
-  );
+  const transition = useTransition(props.algo, null, {
+    from: {
+      position: "absolute",
+      overflowX: "hidden",
+      transform: "translateY(-5vh) scale(0.7)",
+      opacity: 0
+    },
+    enter: { opacity: 1, transform: "translateY(0vh) scale(1)" },
+    leave: { opacity: 0, transform: "translateY(5vh) scale(0.7)" }
+  });
+  console.log(transition);
+  return transition.map(({ item, props, key }) => (
+    <animated.div key={key} style={props}>
+      <AlgoInfoCard>
+        <Typography variant="h4">{getTitle(item)}</Typography>
+        <br />
+        <Typography variant="body1">{getContent(item)}</Typography>
+      </AlgoInfoCard>
+    </animated.div>
+  ));
 };
 
 const mapStateToProps = state => {
