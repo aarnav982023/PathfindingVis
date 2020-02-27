@@ -17,7 +17,7 @@ const VisitedCard = withStyles({
 const Visited = props => {
   const progress = (props.visited * 100) / (props.rows * props.columns);
   return (
-    <VisitedCard className="visitedCard">
+    <VisitedCard>
       <Typography variant="h6">Visited</Typography>
       <Typography variant="h3">{props.visited}</Typography>
       <LinearProgress variant="determinate" value={progress} />

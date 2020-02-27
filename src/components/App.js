@@ -5,7 +5,12 @@ import Visited from "./Visited";
 import ShortestPath from "./ShortestPath";
 import AlgoInfo from "./AlgoInfo";
 import "../assets/css/App.css";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import {
+  createMuiTheme,
+  ThemeProvider,
+  useTheme
+} from "@material-ui/core/styles";
+import { useTrail, animated } from "react-spring";
 
 const myTheme = createMuiTheme({
   palette: {
@@ -35,7 +40,7 @@ const myTheme = createMuiTheme({
 
 const App = () => {
   const gridRef = React.useRef();
-
+  const theme = useTheme();
   const xs = window.matchMedia("(max-width: 576px)").matches;
   const sm = window.matchMedia("(min-width: 576px)").matches;
   const md = window.matchMedia("(min-width: 768px)").matches;
@@ -60,6 +65,14 @@ const App = () => {
     return 100;
   };
 
+  const trail = useTrail(4, {
+    opacity: 1,
+    width: "100%",
+    marginRight: theme.spacing(2),
+    transform: "translateY(0px) ",
+    from: { opacity: 0, transform: "translateY(100px) " }
+  });
+
   return (
     <ThemeProvider theme={myTheme}>
       <div className="app">
@@ -75,13 +88,21 @@ const App = () => {
           }}
         />
         <div className="content">
-          <Grid ref={gridRef} rows={getRow()} columns={getColumn()} />
+          <animated.div style={trail[0]}>
+            <Grid ref={gridRef} rows={getRow()} columns={getColumn()} />
+          </animated.div>
           <div className="data">
             <div className="dataContent">
-              <Visited rows={getRow()} columns={getColumn()} />
-              <ShortestPath />
+              <animated.div style={trail[1]}>
+                <Visited rows={getRow()} columns={getColumn()} />
+              </animated.div>
+              <animated.div style={trail[2]}>
+                <ShortestPath rows={getRow()} columns={getColumn()} />
+              </animated.div>
             </div>
-            <AlgoInfo />
+            <animated.div style={trail[3]}>
+              <AlgoInfo />
+            </animated.div>
           </div>
         </div>
       </div>
