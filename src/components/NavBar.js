@@ -107,8 +107,10 @@ const useStyles = makeStyles(theme => ({
     padding: "1vh",
     fontSize: "1rem"
   },
-  test: {
-    padding: "1vh 0 1vh 1vh"
+  header: {
+    paddingTop: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
+    paddingBottom: theme.spacing(1)
   }
 }));
 
@@ -173,7 +175,7 @@ function NavBar(props) {
           />
         </ListItem>
         <Divider />
-        <Typography variant="h6" className={classes.test}>
+        <Typography variant="h6" className={classes.header}>
           Algorithms
         </Typography>
         <ListItem
@@ -238,7 +240,7 @@ function NavBar(props) {
           Jump Point Search
         </ListItem>
         <Divider />
-        <Typography variant="h6" className={classes.test}>
+        <Typography variant="h6" className={classes.header}>
           Mazes
         </Typography>
         <ListItem

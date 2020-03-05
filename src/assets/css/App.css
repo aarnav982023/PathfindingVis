@@ -68,8 +68,8 @@
 .content {
   display: flex;
   width: 100%;
-  margin-top: 8vh;
-  padding: 0 1vw 1vw 1vw;
+  --margin-top: 7vh;
+  padding: 1vw 1vw 1vw 1vw;
 }
 .data {
   width: 40%;

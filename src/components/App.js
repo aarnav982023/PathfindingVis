@@ -8,7 +8,8 @@ import "../assets/css/App.css";
 import {
   createMuiTheme,
   ThemeProvider,
-  useTheme
+  useTheme,
+  makeStyles
 } from "@material-ui/core/styles";
 import { useTrail, animated } from "react-spring";
 
@@ -38,8 +39,13 @@ const myTheme = createMuiTheme({
   }
 });
 
+const useStyles = makeStyles(theme => ({
+  toolbar: theme.mixins.toolbar
+}));
+
 const App = () => {
   const gridRef = React.useRef();
+  const classes = useStyles();
   const theme = useTheme();
   const xs = window.matchMedia("(max-width: 576px)").matches;
   const sm = window.matchMedia("(min-width: 576px)").matches;
@@ -75,6 +81,7 @@ const App = () => {
 
   return (
     <ThemeProvider theme={myTheme}>
+      <div className={classes.toolbar} />
       <div className="app">
         <NavBar
           visualize={() => {
