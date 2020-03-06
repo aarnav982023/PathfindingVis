@@ -43,7 +43,7 @@ const kruskal = (grid, rows, columns) => {
       removedWalls.push(grid[edge.row + 1][edge.col]);
     }
   });
-  return { addedWalls, removedWalls };
+  return { addedWalls, removedWalls, animAddedWalls: false };
 };
 
 const shuffle = array => {

@@ -6,8 +6,6 @@ const prim = (grid, rows, columns) => {
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < columns; j++) {
       if (i % 2 === 0 || j % 2 === 0) {
-        if (i !== 0 && j !== 0 && i !== rows - 1 && j !== columns - 1) {
-        }
       } else open[getKey(i, j)] = grid[i][j];
       grid[i][j].isWall = true;
       addedWalls.push(grid[i][j]);
@@ -80,7 +78,8 @@ const prim = (grid, rows, columns) => {
     });
     delete frontier[randFKey];
   }
-  return { addedWalls, removedWalls };
+  console.log(addedWalls.length);
+  return { addedWalls, removedWalls, animAddedWalls: false };
 };
 
 const randomKey = obj => {

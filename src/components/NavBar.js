@@ -263,6 +263,16 @@ function NavBar(props) {
         >
           Prim
         </ListItem>
+        <ListItem
+          button
+          selected={maze === 2}
+          disabled={anim}
+          onClick={event => {
+            handleMazeItemClick(2);
+          }}
+        >
+          Recursive Division
+        </ListItem>
       </List>
     </div>
   );

@@ -4,6 +4,7 @@ import dijkstra from "../algorithms/dijkstra";
 import astar from "../algorithms/astar";
 import jumpPointSearch from "../algorithms/jumpPointSearch";
 import kruskal from "../mazeGen/kruskall";
+import recursiveDivision from "../mazeGen/recursiveDivison";
 import prim from "../mazeGen/Prim";
 import Card from "@material-ui/core/Card";
 import { withStyles } from "@material-ui/core/styles";
@@ -368,8 +369,12 @@ class TGrid extends React.Component {
     } else {
       this.props.setAnimating(true);
       await this.setGrid(grid);
-      const { addedWalls, removedWalls } = this.getResponseFromMaze(grid);
-      this.animateMaze(addedWalls, removedWalls, grid);
+      const {
+        addedWalls,
+        removedWalls,
+        animAddedWalls
+      } = this.getResponseFromMaze(grid);
+      this.animateMaze(addedWalls, removedWalls, grid, animAddedWalls);
     }
   };
 
@@ -379,14 +384,16 @@ class TGrid extends React.Component {
         return kruskal(grid, this.props.rows, this.props.columns);
       case 1:
         return prim(grid, this.props.rows, this.props.columns);
+      case 2:
+        return recursiveDivision(grid, this.props.rows, this.props.columns);
       default:
         break;
     }
   };
 
-  animateMaze = (addedWalls, removedWalls, grid) => {
-    //let i = 0;
-    /*const animateAddedWalls = () => {
+  animateMaze = (addedWalls, removedWalls, grid, animAddedWalls) => {
+    let i = 0;
+    const animateAddedWalls = () => {
       if (i === addedWalls.length) {
         if (removedWalls.length) requestAnimationFrame(animateRemovedWalls);
         else {
@@ -399,7 +406,7 @@ class TGrid extends React.Component {
       this.nodeRefs[row][col].current.classList.add(wallClass);
       ++i;
       requestAnimationFrame(animateAddedWalls);
-    };*/
+    };
     let j = 0;
     const animateRemovedWalls = () => {
       if (j === removedWalls.length) {
@@ -417,8 +424,12 @@ class TGrid extends React.Component {
         this.nodeRefs[node.row][node.col].current.classList.add(wallClass)
       );
     };
-    showAddedWalls();
-    requestAnimationFrame(animateRemovedWalls);
+    if (animAddedWalls) {
+      requestAnimationFrame(animateAddedWalls);
+    } else {
+      showAddedWalls();
+      requestAnimationFrame(animateRemovedWalls);
+    }
   };
 }
 
