@@ -13,11 +13,11 @@ import {
 } from "@material-ui/core/styles";
 import { useTrail, animated } from "react-spring";
 
-const myTheme = createMuiTheme({
+const darkTheme = createMuiTheme({
   palette: {
     type: "dark",
     background: {
-      default: "#151a30",
+      default: "#151a35",
       paper: "#222b45"
     },
     divider: "#151a30",
@@ -33,6 +33,13 @@ const myTheme = createMuiTheme({
         fontSize: "1rem"
       }
     }
+    // MuiCssBaseline: {
+    //   "@global": {
+    //     body: {
+    //       backgroundImage: "linear-gradient(to right,red,r)"
+    //     }
+    //   }
+    // }
   },
   typography: {
     fontFamily: "'Karla', sans-serif"
@@ -80,7 +87,7 @@ const App = () => {
   });
 
   return (
-    <ThemeProvider theme={myTheme}>
+    <ThemeProvider theme={darkTheme}>
       <div className={classes.toolbar} />
       <div className="app">
         <NavBar

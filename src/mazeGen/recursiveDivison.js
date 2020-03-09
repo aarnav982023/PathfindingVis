@@ -17,7 +17,6 @@ const recursiveDivision = (grid, rows, columns) => {
     addedWalls.push(grid[0][columns - j - 1]);
     addedWalls.push(grid[rows - 1][j]);
   }
-  console.log({ rows, columns });
   const width = columns;
   const height = rows;
   divide(grid, 0, 0, width, height, chooseOrientation(width, height));
@@ -26,7 +25,7 @@ const recursiveDivision = (grid, rows, columns) => {
 };
 
 const divide = (grid, x, y, width, height, orientation) => {
-  if (height < 2 || width < 2) return;
+  if (height < 2 && width < 2) return;
   const horizontal = orientation === HORIZONTAL;
   let wx = x + (horizontal ? randEven(height - 2) : 0);
   let wy = y + (horizontal ? 0 : randEven(width - 2));

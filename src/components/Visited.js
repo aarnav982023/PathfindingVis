@@ -9,8 +9,7 @@ const VisitedCard = withStyles({
   root: {
     width: "100%",
     padding: "3%",
-    marginBottom: "2vh",
-    marginRight: "2%"
+    marginBottom: "2vh"
   }
 })(Card);
 
