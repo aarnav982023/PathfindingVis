@@ -9,7 +9,7 @@ import {
   createMuiTheme,
   ThemeProvider,
   useTheme,
-  makeStyles
+  makeStyles,
 } from "@material-ui/core/styles";
 import { useTrail, animated } from "react-spring";
 
@@ -17,22 +17,22 @@ const darkTheme = createMuiTheme({
   palette: {
     type: "dark",
     background: {
-      default: "#151a35",
-      paper: "#222b45"
+      default: "#151a35", //#151a35
+      paper: "#222b45", //#222b45
     },
     divider: "#151a30",
     action: {
       hover: "#598bff66",
       selected: "#3366ff4D",
-      active: "#274bdb"
-    }
+      active: "#274bdb",
+    },
   },
   overrides: {
     MuiListItem: {
       root: {
-        fontSize: "1rem"
-      }
-    }
+        fontSize: "1rem",
+      },
+    },
     // MuiCssBaseline: {
     //   "@global": {
     //     body: {
@@ -42,12 +42,12 @@ const darkTheme = createMuiTheme({
     // }
   },
   typography: {
-    fontFamily: "'Karla', sans-serif"
-  }
+    fontFamily: "'Karla', sans-serif",
+  },
 });
 
-const useStyles = makeStyles(theme => ({
-  toolbar: theme.mixins.toolbar
+const useStyles = makeStyles((theme) => ({
+  toolbar: theme.mixins.toolbar,
 }));
 
 const App = () => {
@@ -83,7 +83,7 @@ const App = () => {
     width: "100%",
     marginRight: theme.spacing(2),
     transform: "translateY(0px) ",
-    from: { opacity: 0, transform: "translateY(100px) " }
+    from: { opacity: 0, transform: "translateY(100px) " },
   });
 
   return (
@@ -97,7 +97,7 @@ const App = () => {
           clearGrid={() => {
             gridRef.current.clearGrid();
           }}
-          visualizeMaze={animateMaze => {
+          visualizeMaze={(animateMaze) => {
             gridRef.current.visualizeMaze();
           }}
         />
