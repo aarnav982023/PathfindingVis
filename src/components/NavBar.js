@@ -17,6 +17,7 @@ import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
+import GitHubIcon from "@material-ui/icons/GitHub";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { Divider } from "@material-ui/core";
@@ -26,7 +27,7 @@ import {
   allowDiag,
   changeHeuristic,
   selectMaze,
-  animateMaze
+  animateMaze,
 } from "../actions";
 
 const drawerWidth = 275;
@@ -35,83 +36,87 @@ const OrangeSwitch = withStyles({
   switchBase: {
     color: "#FFCC80",
     "&$checked": {
-      color: "#EF6C00"
+      color: "#EF6C00",
     },
     "&$checked + $track": {
-      backgroundColor: "#E65100"
-    }
+      backgroundColor: "#E65100",
+    },
   },
   checked: {},
-  track: {}
+  track: {},
 })(Switch);
 
 const OrangeRadio = withStyles({
   root: {
     color: "",
     "&$checked": {
-      color: "#EF6C00"
-    }
+      color: "#EF6C00",
+    },
   },
-  checked: {}
-})(props => <Radio color="default" {...props} />);
+  checked: {},
+})((props) => <Radio color="default" {...props} />);
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex"
+    display: "flex",
   },
   title: {
     display: "none",
     [theme.breakpoints.up("sm")]: {
       display: "block",
-      marginRight: theme.spacing(6)
-    }
+      marginRight: theme.spacing(6),
+    },
   },
   drawer: {
     [theme.breakpoints.up("md")]: {
       width: drawerWidth,
-      flexShrink: 0
-    }
+      flexShrink: 0,
+    },
   },
   appBar: {
     [theme.breakpoints.up("md")]: {
-      zIndex: theme.zIndex.drawer + 1
+      zIndex: theme.zIndex.drawer + 1,
     },
     border: 0,
     backgroundColor: theme.palette.background.paper,
-    boxShadow: "0 0.5rem 1rem 0 #1a1f33"
+    boxShadow: "0 0.5rem 1rem 0 #1a1f33",
   },
   menuButton: {
     marginRight: theme.spacing(2),
     [theme.breakpoints.up("md")]: {
-      display: "none"
-    }
+      display: "none",
+    },
   },
   toolbar: theme.mixins.toolbar,
   toolButton: {
-    marginRight: "1vw"
+    marginRight: "1vw",
   },
   drawerPaper: {
     //Color for actual drawer can be set here
     width: drawerWidth,
-    border: 0
+    border: 0,
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3)
+    padding: theme.spacing(3),
   },
   card: {
     width: "100%",
-    borderRadius: "0.5vw"
+    borderRadius: "0.5vw",
   },
   cardHeadText: {
     padding: "1vh",
-    fontSize: "1rem"
+    fontSize: "1rem",
   },
   header: {
     paddingTop: theme.spacing(1),
     paddingLeft: theme.spacing(1),
-    paddingBottom: theme.spacing(1)
-  }
+    paddingBottom: theme.spacing(1),
+  },
+  titlebar: {
+    display: "flex",
+    flexGrow: 1,
+  },
 }));
 
 function NavBar(props) {
@@ -127,7 +132,7 @@ function NavBar(props) {
     selectMaze,
     animMaze,
     animateMaze,
-    anim
+    anim,
   } = props;
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -135,14 +140,17 @@ function NavBar(props) {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-  const handleAlgoClick = index => {
+  const handleAlgoClick = (index) => {
     selectAlgo(index);
   };
-  const handleHeuristicChange = event => {
+  const handleHeuristicChange = (event) => {
     changeHeuristic({ [algo]: event.target.value });
   };
-  const handleMazeItemClick = index => {
+  const handleMazeItemClick = (index) => {
     selectMaze(index);
+  };
+  const onGitHubClick = () => {
+    window.open("https://github.com/aarnav982023/PathfindingVis", "_blank");
   };
 
   const drawer = (
@@ -182,7 +190,7 @@ function NavBar(props) {
           button
           disabled={anim}
           selected={algo === 0}
-          onClick={event => {
+          onClick={(event) => {
             handleAlgoClick(0);
           }}
         >
@@ -192,7 +200,7 @@ function NavBar(props) {
           button
           selected={algo === 1}
           disabled={anim}
-          onClick={event => {
+          onClick={(event) => {
             handleAlgoClick(1);
           }}
         >
@@ -233,7 +241,7 @@ function NavBar(props) {
           button
           selected={algo === 2}
           disabled={anim}
-          onClick={event => {
+          onClick={(event) => {
             handleAlgoClick(2);
           }}
         >
@@ -247,7 +255,7 @@ function NavBar(props) {
           button
           selected={maze === 0}
           disabled={anim}
-          onClick={event => {
+          onClick={(event) => {
             handleMazeItemClick(0);
           }}
         >
@@ -257,7 +265,7 @@ function NavBar(props) {
           button
           selected={maze === 1}
           disabled={anim}
-          onClick={event => {
+          onClick={(event) => {
             handleMazeItemClick(1);
           }}
         >
@@ -267,7 +275,7 @@ function NavBar(props) {
           button
           selected={maze === 2}
           disabled={anim}
-          onClick={event => {
+          onClick={(event) => {
             handleMazeItemClick(2);
           }}
         >
@@ -282,48 +290,53 @@ function NavBar(props) {
       <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            className={classes.menuButton}
-          >
-            <MenuIcon />
+          <div className={classes.titlebar}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              className={classes.menuButton}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              Pathfinding Visualizer
+            </Typography>
+            <Button
+              className={classes.toolButton}
+              variant="text"
+              disableElevation
+              onClick={() => props.visualize()}
+              disabled={anim}
+            >
+              Visualize
+            </Button>
+            <Button
+              className={classes.toolButton}
+              variant="text"
+              disableElevation
+              onClick={() => {
+                props.clearGrid();
+              }}
+              disabled={anim}
+            >
+              Clear
+            </Button>
+            <Button
+              variant="text"
+              disableElevation
+              onClick={() => {
+                props.visualizeMaze(animateMaze);
+              }}
+              disabled={anim}
+            >
+              Maze
+            </Button>
+          </div>
+          <IconButton style={{ color: "white" }} onClick={onGitHubClick}>
+            <GitHubIcon style={{ fontSize: "30" }} />
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            Pathfinding Visualizer
-          </Typography>
-          <Button
-            className={classes.toolButton}
-            variant="text"
-            disableElevation
-            onClick={() => props.visualize()}
-            disabled={anim}
-          >
-            Visualize
-          </Button>
-          <Button
-            className={classes.toolButton}
-            variant="text"
-            disableElevation
-            onClick={() => {
-              props.clearGrid();
-            }}
-            disabled={anim}
-          >
-            Clear
-          </Button>
-          <Button
-            variant="text"
-            disableElevation
-            onClick={() => {
-              props.visualizeMaze(animateMaze);
-            }}
-            disabled={anim}
-          >
-            Maze
-          </Button>
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer}>
@@ -338,10 +351,10 @@ function NavBar(props) {
             open={mobileOpen}
             onClose={handleDrawerToggle}
             classes={{
-              paper: classes.drawerPaper
+              paper: classes.drawerPaper,
             }}
             ModalProps={{
-              keepMounted: true // Better open performance on mobile.
+              keepMounted: true, // Better open performance on mobile.
             }}
           >
             {drawer}
@@ -350,7 +363,7 @@ function NavBar(props) {
         <Hidden smDown implementation="css">
           <Drawer
             classes={{
-              paper: classes.drawerPaper
+              paper: classes.drawerPaper,
             }}
             variant="permanent"
             open
@@ -364,7 +377,7 @@ function NavBar(props) {
   );
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return state;
 };
 
@@ -373,5 +386,5 @@ export default connect(mapStateToProps, {
   allowDiag,
   changeHeuristic,
   selectMaze,
-  animateMaze
+  animateMaze,
 })(NavBar);
