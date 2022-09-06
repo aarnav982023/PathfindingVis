@@ -20,10 +20,11 @@
     "redux": "^4.2.0"
   },
   "scripts": {
-    "predeploy": "npm run build",
+    "predeploy": "npm run winBuild",
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "winBuild": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
